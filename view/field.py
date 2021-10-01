@@ -1,7 +1,7 @@
 from graphics import Rectangle, Point
 
-from grid_position import GridPosition
-from view.utils import Color
+from controllers.grid_position import GridPosition
+from view.utils import ColorEnum
 
 
 class Field:
@@ -15,7 +15,7 @@ class Field:
         self.top = size * self.position.row
         self.bottom = self.top + self.square_size
 
-    def get_rectangle(self, color=Color.SQUARE.value) -> Rectangle:
+    def get_rectangle(self, color=ColorEnum.SQUARE.value) -> Rectangle:
         top_left = Point(self.left, self.top)
         bottom_right = Point(self.right, self.bottom)
         rectangle = Rectangle(top_left, bottom_right)

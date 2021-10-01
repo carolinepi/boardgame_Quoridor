@@ -1,13 +1,24 @@
 from typing import List
 
-from view.board import Board
+from controllers.fence_step import FenceStep
+from controllers.pawn_step import PawnStep
+from controllers.step_calculator_controller import StepCalculatorController
+
 from models.player import Player
+
+from view.board import Board
 
 
 class GameController:
-    def __init__(self, players: List[Player], board: Board):
+    def __init__(
+        self,
+        players: List[Player],
+        board: Board,
+        calculator_controller: StepCalculatorController
+    ):
         self.players = players
         self.board = board
+        self.calculator_controller = calculator_controller
 
     @property
     def players_len(self) -> int:
@@ -27,12 +38,30 @@ class GameController:
         self.board.create_window()
         self.board.draw()
         for player in self.players:
-            field = self.board.get_field(player.startPosition)
+            field = self.board.get_field(player.start_position)
             self.board.draw_pawn(player.pawn, field)
 
         finished = False
         while not finished:
-            pass
+            for player in self.players:
+                print(f'{player} go')
+                action = player.play(
+                    self.board,
+                    self.calculator_controller.get_valid_pawn_steps_ignoring_for_position,
+                    self.calculator_controller.get_valid_fences_step_for_position,
+                )
+                if isinstance(action, PawnStep):
+                    field = self.board.get_field(action.to_position)
+                    player.move_pawn(field)
+                    self.board.move_pawn(player.pawn, field)
+                    if player.has_won:
+                        finished = True
+                        print(f'{player.name} is winner')
+                # elif isinstance(action, FenceStep):
+                #     player.placeStep(action.coord, action.direction)
+                # elif isinstance(action, Quit):
+                #     finished = True
+                #     print("Player %s quitted" % player.name)
 
     def finish(self):
         self.board.close_window()

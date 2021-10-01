@@ -1,0 +1,4 @@
+app:
+  n: 9
+  square_size: 32
+  inner_size: 4

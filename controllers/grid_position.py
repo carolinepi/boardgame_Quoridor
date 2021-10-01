@@ -30,4 +30,7 @@ class GridPosition:
         return hash((self.column, self.row))
 
     def __str__(self):
-        return f'{self.column} {self.row}'
+        return f'GridPosition({self.column}, {self.row})'
+
+    def __repr__(self):
+        return f'GridPosition({self.column}, {self.row})'
