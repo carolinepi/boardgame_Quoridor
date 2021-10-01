@@ -47,7 +47,7 @@ class GameController:
                 print(f'{player} go')
                 action = player.play(
                     self.board,
-                    self.calculator_controller.get_valid_pawn_steps_ignoring_for_position,
+                    self.calculator_controller.get_intersection_valid_pawn_steps_ignoring_for_position,
                     self.calculator_controller.get_valid_fences_step_for_position,
                 )
                 if isinstance(action, PawnStep):

@@ -23,3 +23,15 @@ class PawnStep:
 
     def __repr__(self):
         return f'PawnStep({self.to_position.column}, {self.to_position.row})'
+
+    def __eq__(self, other: 'PawnStep'):
+        return (
+            self.from_position == other.from_position and
+            self.to_position == other.to_position
+        )
+
+    def __ne__(self, other: 'PawnStep'):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.from_position, self.to_position))

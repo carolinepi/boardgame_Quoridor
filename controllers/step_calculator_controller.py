@@ -90,7 +90,6 @@ class StepCalculatorController:
                 )
             else:
                 result.append(PawnStep(position, position.bottom()))
-        print(result)
         return result
 
     def get_valid_pawn_steps_ignoring_for_position(
@@ -106,7 +105,6 @@ class StepCalculatorController:
             result.append(PawnStep(position, position.top()))
         if row != self.last_n:
             result.append(PawnStep(position, position.bottom()))
-        print(result)
         return result
 
     # def get_valid_steps(self):
@@ -123,8 +121,7 @@ class StepCalculatorController:
 
     def get_intersection_valid_pawn_steps_ignoring_for_position(
         self, position: GridPosition
-    ):
-        # TODO: dont work ???
+    ) -> List[PawnStep]:
         return list(
             set(self.get_valid_pawn_steps_for_position(position))
             &
