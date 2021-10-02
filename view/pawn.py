@@ -25,10 +25,6 @@ class Pawn:
         )
         return self._figure
 
-    def move(self, field: Field, square_size: int):
-        self.position = field.position
-        return self.get_figure(field, square_size)
-
     @property
     def current_element(self) -> PawnFigure:
         if self._figure is not None:

@@ -7,14 +7,14 @@ class PawnFigure:
 
     def __init__(
         self,
-        center: Point,
+        p: Point,
         radius: int,
         label: str,
         color: ColorType,
         size_label: int
     ):
-        self.circle = Circle(center, radius)
-        self.label = Text(center, label)
+        self.circle = Circle(p, radius)
+        self.label = Text(p, label)
         self.auto_set(color, size_label)
 
     def auto_set(self, color: ColorType, size_label: int):
