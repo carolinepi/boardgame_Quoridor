@@ -35,18 +35,6 @@ class Board:
         self.first_n = 0
         self.window = None
 
-    def is_at_left_edge(self, position: GridPosition) -> bool:
-        return position.column == self.first_n
-
-    def is_at_right_edge(self, position: GridPosition) -> bool:
-        return position.col == self.last_n
-
-    def is_at_top_edge(self, position: GridPosition) -> bool:
-        return position.row == self.first_n
-
-    def is_at_bottom_edge(self, position: GridPosition) -> bool:
-        return position.row == self.last_n
-
     def create_window(self) -> None:
         side = self.square_size * self.n + self.inner_size * (self.n - 1)
         self.window = GraphWin("Quoridor", side, side)
@@ -69,7 +57,7 @@ class Board:
         label.draw(self.window)
         return circle, label
 
-    def undraw_pawn(self, pawn: Pawn):
+    def undraw_pawn(self, pawn: Pawn) -> None:
         for element in pawn.current_elements:
             element.undraw()
 
@@ -78,6 +66,9 @@ class Board:
             field, self.square_size, self.inner_size
         )
         rectangle.draw(self.window)
+
+    def undraw_fence(self, fence: Fence):
+        fence.current_element.undraw()
 
     def get_field(self, position: GridPosition) -> Field:
         return self.field[position.column][position.row]
@@ -158,22 +149,24 @@ class Board:
         # vertical fence
         if x % self.size > self.square_size and y % self.size < self.square_size:
             field = self.get_field_from_mouse_position(x + self.square_size, y)
-            return FenceStep(field.position, FenceDirection.VERTICAL) if self.isValidFencePlacing(field.position, FenceDirection.VERTICAL) else None
+            return FenceStep(field.position, FenceDirection.VERTICAL)
+            # return FenceStep(field.position, FenceDirection.VERTICAL) if self.isValidFencePlacing(field.position, FenceDirection.VERTICAL) else None
         # horizontal fence
         if x % self.size < self.square_size and y % self.size > self.square_size:
             field = self.get_field_from_mouse_position(x, y + self.square_size)
-            return FenceStep(field.position, FenceDirection.HORIZONTAL) if self.isValidFencePlacing(field.position, FenceDirection.HORIZONTAL) else None
+            # return FenceStep(field.position, FenceDirection.HORIZONTAL) if self.isValidFencePlacing(field.position, FenceDirection.HORIZONTAL) else None
+            return FenceStep(field.position, FenceDirection.HORIZONTAL)
         # on inner crossing space
         if x % self.size > self.square_size and y % self.size > self.square_size:
             field = self.get_field_from_mouse_position(x + self.square_size, y + self.square_size)
             direction = FenceDirection.HORIZONTAL if field.left - x < field.top - y else FenceDirection.VERTICAL
-            return FenceStep(field.position, direction) if self.isValidFencePlacing(field.position, direction) else None
+            # return FenceStep(field.position, direction) if self.isValidFencePlacing(field.position, direction) else None
+            return FenceStep(field.position, direction)
         return None
 
-    def move_pawn(self, pawn: Pawn, field: Field):
+    def move_pawn(self, pawn: Pawn, field: Field) -> None:
         self.undraw_pawn(pawn)
         self.draw_pawn(pawn, field)
 
-
-
-
+    def put_fence(self, fence: Fence, field: Field) -> None:
+        self.draw_fence(fence, field)

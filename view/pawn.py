@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List, Union
 
 from graphics import Text, Circle
 
@@ -17,7 +17,7 @@ class Pawn:
         self.position = position
         self.color = color
         self.name = name
-        self.current_elements = []
+        self._current_elements = []
 
     def get_circle_and_label(
         self, field: Field, square_size: int
@@ -31,10 +31,14 @@ class Pawn:
         label.setSize(min(max(5, int(square_size / 2)), 36))
         label.setStyle("bold")
         label.setTextColor(ColorEnum.WHITE.value)
-        self.current_elements = [circle, label]
+        self._current_elements = [circle, label]
         return circle, label
 
     def move(self, field: Field, square_size: int):
         self.position = field.position
         return self.get_circle_and_label(field, square_size)
+
+    @property
+    def current_elements(self) -> List[Union[Circle, Text]]:
+        return self._current_elements
 

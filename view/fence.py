@@ -10,11 +10,12 @@ class Fence:
         self,
         position: GridPosition,
         color: ColorType,
-        direction: FenceDirection
+        direction: FenceDirection,
     ):
         self.position = position
         self.direction = direction
         self.color = color
+        self._current_element = None
 
     def get_rectangle(
         self,
@@ -37,4 +38,10 @@ class Fence:
             )
         rectangle.setFill(self.color.value)
         rectangle.setWidth(0)
+        self._current_element = rectangle
         return rectangle
+
+    @property
+    def current_element(self) -> Rectangle:
+        if self._current_element is not None:
+            return self._current_element
