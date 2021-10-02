@@ -24,16 +24,15 @@ class Fence:
         inner_size: int,
     ) -> Rectangle:
         height = 2 * square_size + inner_size
-        width = inner_size
         rectangle = None
         if self.direction == FenceDirection.HORIZONTAL:
             rectangle = Rectangle(
-                Point(field.left, field.top - width),
+                Point(field.left, field.top - inner_size),
                 Point(field.left + height, field.top)
             )
         if self.direction == FenceDirection.VERTICAL:
             rectangle = Rectangle(
-                Point(field.left - width, field.top),
+                Point(field.left - inner_size, field.top),
                 Point(field.left, field.top + height)
             )
         rectangle.setFill(self.color.value)
