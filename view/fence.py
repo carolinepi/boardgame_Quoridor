@@ -1,6 +1,7 @@
 from graphics import Rectangle, Point
 
 from models.grid_position import GridPosition
+from view.facade import FenceFigure
 from view.field import Field
 from view.utils import FenceDirection, ColorType
 
@@ -15,32 +16,30 @@ class Fence:
         self.position = position
         self.direction = direction
         self.color = color
-        self._current_element = None
+        self._figure = None
 
-    def get_rectangle(
+    def get_figure(
         self,
         field: Field,
         square_size: int,
         inner_size: int,
-    ) -> Rectangle:
+    ) -> FenceFigure:
         height = 2 * square_size + inner_size
-        rectangle = None
         if self.direction == FenceDirection.HORIZONTAL:
-            rectangle = Rectangle(
+            self._figure = FenceFigure(
                 Point(field.left, field.top - inner_size),
-                Point(field.left + height, field.top)
+                Point(field.left + height, field.top),
+                self.color
             )
         if self.direction == FenceDirection.VERTICAL:
-            rectangle = Rectangle(
+            self._figure = FenceFigure(
                 Point(field.left - inner_size, field.top),
-                Point(field.left, field.top + height)
+                Point(field.left, field.top + height),
+                self.color
             )
-        rectangle.setFill(self.color.value)
-        rectangle.setWidth(0)
-        self._current_element = rectangle
-        return rectangle
+        return self._figure
 
     @property
     def current_element(self) -> Rectangle:
-        if self._current_element is not None:
-            return self._current_element
+        if self._figure is not None:
+            return self._figure

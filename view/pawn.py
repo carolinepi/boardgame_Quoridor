@@ -1,10 +1,7 @@
-from typing import Tuple, List, Union
-
-from graphics import Text, Circle
-
 from models.grid_position import GridPosition
+from view.facade import PawnFigure
 from view.field import Field
-from view.utils import ColorEnum, ColorType
+from view.utils import ColorType
 
 
 class Pawn:
@@ -17,28 +14,23 @@ class Pawn:
         self.position = position
         self.color = color
         self.name = name
-        self._current_elements = []
+        self._figure = None
 
-    def get_circle_and_label(
-        self, field: Field, square_size: int
-    ) -> Tuple[Circle, Text]:
+    def get_figure(self, field: Field, square_size: int) -> PawnFigure:
         center = field.middle_point
         radius = int(square_size * 0.4)
-        circle = Circle(center, radius)
-        circle.setFill(self.color.value)
-        circle.setWidth(0)
-        label = Text(center, self.name[:1])
-        label.setSize(min(max(5, int(square_size / 2)), 36))
-        label.setStyle("bold")
-        label.setTextColor(ColorEnum.WHITE.value)
-        self._current_elements = [circle, label]
-        return circle, label
+        label_size = (min(max(5, int(square_size / 2)), 36))
+        self._figure = PawnFigure(
+            center, radius, self.name[:1], self.color, label_size
+        )
+        return self._figure
 
     def move(self, field: Field, square_size: int):
         self.position = field.position
-        return self.get_circle_and_label(field, square_size)
+        return self.get_figure(field, square_size)
 
     @property
-    def current_elements(self) -> List[Union[Circle, Text]]:
-        return self._current_elements
+    def current_element(self) -> PawnFigure:
+        if self._figure is not None:
+            return self._figure
 
