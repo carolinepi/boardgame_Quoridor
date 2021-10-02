@@ -1,4 +1,4 @@
-from typing import Callable, List, Union, Optional
+from typing import List, Union, Optional
 
 from controllers.fence_step import FenceStep
 from controllers.grid_position import GridPosition
@@ -33,8 +33,8 @@ class Player:
     def play(
         self,
         board: Board,
-        get_valid_pawn_steps: Callable,
-        get_valid_fences_step_for_position: Callable,
+        valid_pawn_steps: List[PawnStep],
+        valid_fence_steps: List[FenceStep],
     ) -> Optional[Union[PawnStep, FenceStep]]:
         pass
 

@@ -14,7 +14,7 @@ class StepCalculatorController:
         self.last_n = self.n - 1
         self.middle_n = int(self.last_n / 2)
 
-    def get_valid_fences_step_for_position(
+    def get_valid_fence_steps_for_position(
         self, position: GridPosition
     ) -> List[FenceStep]:
         column, row = position.column, position.row
@@ -112,14 +112,14 @@ class StepCalculatorController:
     #         for row in range(self.n):
     #             position = GridPosition(column, row)
     #             self.valid_fences_step.extend(
-    #                 self.get_valid_fences_step_for_position(position)
+    #                 self.get_valid_fence_steps_for_position(position)
     #             )
     #             self.valid_pawns_step[position] = \
     #                 self.get_valid_pawn_steps_for_position(position)
     #             self.valid_pawns_step_ignore_other[position] = \
     #                 self.get_valid_pawn_steps_ignoring_for_position(position)
 
-    def get_intersection_valid_pawn_steps_ignoring_for_position(
+    def get_intersection_valid_pawn_steps_for_position(
         self, position: GridPosition
     ) -> List[PawnStep]:
         return list(

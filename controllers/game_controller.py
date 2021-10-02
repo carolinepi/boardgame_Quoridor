@@ -45,10 +45,12 @@ class GameController:
         while not finished:
             for player in self.players:
                 print(f'{player} go')
+                valid_pawn_steps = self.calculator_controller.get_intersection_valid_pawn_steps_for_position(player.pawn.position)
+                valid_fence_steps = self.calculator_controller.get_valid_fence_steps_for_position(player.pawn.position)
                 action = player.play(
                     self.board,
-                    self.calculator_controller.get_intersection_valid_pawn_steps_ignoring_for_position,
-                    self.calculator_controller.get_valid_fences_step_for_position,
+                    valid_pawn_steps,
+                    valid_fence_steps,
                 )
                 if isinstance(action, PawnStep):
                     field = self.board.get_field(action.to_position)

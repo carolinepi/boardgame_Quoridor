@@ -1,4 +1,4 @@
-from typing import Callable, Optional, Union
+from typing import Optional, Union, List
 
 from controllers.fence_step import FenceStep
 from controllers.pawn_step import PawnStep
@@ -17,16 +17,12 @@ class Person(Player):
     def play(
         self,
         board: Board,
-        get_valid_pawn_steps: Callable,
-        get_valid_fences_step_for_position: Callable,
+        valid_pawn_steps: List[PawnStep],
+        valid_fence_steps: List[FenceStep],
     ) -> Optional[Union[PawnStep, FenceStep]]:
         while True:
             key = board.get_keyboard()
             if key == PlayerActionKey.PAWN_STEP.value:
-                print(self.pawn.position)
-                print(get_valid_pawn_steps)
-                valid_pawn_steps = get_valid_pawn_steps(self.pawn.position)
-                print(valid_pawn_steps)
                 with board.draw_valid_pawn_step(self.color, self.name, valid_pawn_steps):
                     click = board.get_mouse()
                     pawn_step = board.get_pawn_step_from_mouse_position(
@@ -35,7 +31,6 @@ class Person(Player):
                 if pawn_step is not None:
                     return pawn_step
             if key == PlayerActionKey.FENCE_STEP.value and self.can_fences_step:
-                valid_fence_step = get_valid_fences_step_for_position
                 click = board.get_mouse()
                 fence_step = board.get_fence_step_from_mouse_position(
                     click.x, click.y
