@@ -138,6 +138,8 @@ class Board:
         self, pawn: Pawn, x: int, y: int, valid_pawn_steps: List[PawnStep]
     ) -> Optional[PawnStep]:
         field = self.get_field_from_mouse_position(x, y)
+        if field is None:
+            return None
 
         is_valid = False
         for valid_pawn_step in valid_pawn_steps:
