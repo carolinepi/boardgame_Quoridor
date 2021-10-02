@@ -20,5 +20,6 @@ if __name__ == '__main__':
     calculator_controller = StepCalculatorController(config.n)
     game = GameController(players, board, calculator_controller)
     game.init_game()
+    game.play_game()
     game.finish()
 

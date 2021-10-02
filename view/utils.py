@@ -43,7 +43,6 @@ class ColorEnum(Enum):
         r1, g1, b1 = cls.get_values(color1.value)
         r2, g2, b2 = cls.get_values(color2.value)
         r, g, b = map(cls.get_mixed_ratio, [r1, g1, b1], [r2, g2, b2])
-        print(cls.to_rgb(r, g, b))
         return Color(cls.to_rgb(r, g, b))
 
 

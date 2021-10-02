@@ -1,4 +1,4 @@
-from controllers.grid_position import GridPosition
+from models.grid_position import GridPosition
 from view.utils import FenceDirection
 
 

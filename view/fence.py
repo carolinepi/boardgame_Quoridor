@@ -1,6 +1,6 @@
 from graphics import Rectangle, Point
 
-from controllers.grid_position import GridPosition
+from models.grid_position import GridPosition
 from view.field import Field
 from view.utils import FenceDirection, ColorType
 

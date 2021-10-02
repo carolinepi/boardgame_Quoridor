@@ -1,12 +1,12 @@
 from contextlib import contextmanager
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 from graphics import GraphWin, Rectangle, Point, Text, Circle
 
 from controllers.config_controller import Config
-from controllers.fence_step import FenceStep
-from controllers.grid_position import GridPosition
-from controllers.pawn_step import PawnStep
+from models.fence_step import FenceStep
+from models.grid_position import GridPosition
+from models.pawn_step import PawnStep
 from view.fence import Fence
 
 from view.field import Field
@@ -113,7 +113,6 @@ class Board:
         name: str,
         valid_steps: List[PawnStep]
     ):
-        print(valid_steps)
         hiding_elements = []
         for valid_step in valid_steps:
             position = valid_step.to_position.clone()

@@ -1,8 +1,8 @@
 from typing import List, Union, Optional
 
-from controllers.fence_step import FenceStep
-from controllers.grid_position import GridPosition
-from controllers.pawn_step import PawnStep
+from models.fence_step import FenceStep
+from models.grid_position import GridPosition
+from models.pawn_step import PawnStep
 
 from view.board import Board
 from view.field import Field
@@ -48,9 +48,10 @@ class Player:
 
     @property
     def has_won(self) -> bool:
+        print(self.end_position)
         return True if self.pawn.position in self.end_position else False
 
     def __str__(self) -> str:
-        return "%s (%s)" % (self.name, self.color.name)
+        return f'{self.__class__.__name__} {self.name} ({self.color})'
 
 

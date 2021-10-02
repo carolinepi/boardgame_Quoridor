@@ -1,7 +1,6 @@
 from typing import List
 
-from controllers.fence_step import FenceStep
-from controllers.pawn_step import PawnStep
+from models.pawn_step import PawnStep
 from controllers.step_calculator_controller import StepCalculatorController
 
 from models.player import Player
@@ -41,29 +40,49 @@ class GameController:
             field = self.board.get_field(player.start_position)
             self.board.draw_pawn(player.pawn, field)
 
+    def play_game(self):
         finished = False
         while not finished:
             for player in self.players:
                 print(f'{player} go')
-                valid_pawn_steps = self.calculator_controller.get_intersection_valid_pawn_steps_for_position(player.pawn.position)
-                valid_fence_steps = self.calculator_controller.get_valid_fence_steps_for_position(player.pawn.position)
+                valid_pawn_steps = self.calculator_controller.\
+                    get_intersection_valid_pawn_steps_for_position(
+                        player.pawn.position
+                    )
+                valid_fence_steps = self.calculator_controller.\
+                    get_valid_fence_steps_for_position(
+                        player.pawn.position
+                    )
                 action = player.play(
                     self.board,
                     valid_pawn_steps,
                     valid_fence_steps,
                 )
                 if isinstance(action, PawnStep):
-                    field = self.board.get_field(action.to_position)
-                    player.move_pawn(field)
-                    self.board.move_pawn(player.pawn, field)
-                    if player.has_won:
-                        finished = True
-                        print(f'{player.name} is winner')
+                    finished = self.play_pawn_step(player, action)
+                    if finished:
+                        break
                 # elif isinstance(action, FenceStep):
                 #     player.placeStep(action.coord, action.direction)
                 # elif isinstance(action, Quit):
                 #     finished = True
                 #     print("Player %s quitted" % player.name)
+
+    def play_pawn_step(
+        self, player: Player, action: PawnStep
+    ) -> bool:
+        field = self.board.get_field(action.to_position)
+        player.move_pawn(field)
+        self.board.move_pawn(player.pawn, field)
+        if player.has_won:
+            print(f'{player.name} is winner')
+            return True
+        return False
+
+    def play_fence_step(
+        self, player: Player, action: PawnStep
+    ) -> bool:
+        return False
 
     def finish(self):
         self.board.close_window()

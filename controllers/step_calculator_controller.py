@@ -1,8 +1,8 @@
 from typing import List
 
-from controllers.fence_step import FenceStep
-from controllers.grid_position import GridPosition
-from controllers.pawn_step import PawnStep
+from models.fence_step import FenceStep
+from models.grid_position import GridPosition
+from models.pawn_step import PawnStep
 from view.utils import FenceDirection
 
 

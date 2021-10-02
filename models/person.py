@@ -1,7 +1,7 @@
 from typing import Optional, Union, List
 
-from controllers.fence_step import FenceStep
-from controllers.pawn_step import PawnStep
+from models.fence_step import FenceStep
+from models.pawn_step import PawnStep
 from controllers.utils import PlayerActionKey
 
 from models.player import Player
@@ -38,4 +38,7 @@ class Person(Player):
                 if fence_step is not None:
                     return fence_step
             return None
+
+    def __str__(self) -> str:
+        return f'{self.__class__.__name__} {self.name} ({self.color})'
 

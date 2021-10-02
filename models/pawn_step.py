@@ -1,6 +1,6 @@
 from typing import Optional
 
-from controllers.grid_position import GridPosition
+from models.grid_position import GridPosition
 
 
 class PawnStep:
