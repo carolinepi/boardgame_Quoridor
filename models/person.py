@@ -1,4 +1,4 @@
-from typing import Optional, Union, List
+from typing import Union, List
 
 from models.fence_step import FenceStep
 from models.pawn_step import PawnStep
@@ -19,7 +19,7 @@ class Person(Player):
         board: Board,
         valid_pawn_steps: List[PawnStep],
         valid_fence_steps: List[FenceStep],
-    ) -> Optional[Union[PawnStep, FenceStep]]:
+    ) -> Union[PawnStep, FenceStep]:
         while True:
             key = board.get_keyboard()
             if key == PlayerActionKey.PAWN_STEP.value:
@@ -37,7 +37,6 @@ class Person(Player):
                 )
                 if fence_step is not None:
                     return fence_step
-            return None
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__} {self.name} ({self.color})'
