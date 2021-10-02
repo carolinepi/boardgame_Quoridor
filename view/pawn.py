@@ -41,4 +41,3 @@ class Pawn:
     @property
     def current_elements(self) -> List[Union[Circle, Text]]:
         return self._current_elements
-

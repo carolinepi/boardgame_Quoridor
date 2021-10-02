@@ -57,9 +57,17 @@ class GameController:
         try:
             while not finished:
                 for player in self.players:
+                    # for fence in player.fences:
+                    #     print(fence.coordinates)
+
+                    players_position = self.get_players_positions(player)
+                    blocked_moves = self.get_fences_blocked_moves()
+
                     valid_pawn_steps = self.calculator_controller.\
-                        get_intersection_valid_pawn_steps_for_position(
-                            player.pawn.position
+                        get_valid_pawn_steps(
+                            player.pawn.position,
+                            players_position,
+                            blocked_moves
                         )
                     valid_fence_steps = self.calculator_controller.\
                         get_valid_fence_steps_for_position(
@@ -96,6 +104,21 @@ class GameController:
         field = self.board.get_field(action.position)
         fence = player.put_fence(action.position, action.direction)
         self.board.put_fence(fence, field)
+
+    def get_players_positions(self, current_player):
+        return [(player.pawn.position.column, player.pawn.position.row)
+                for player in self.players if player != current_player]
+
+    def get_fences_blocked_moves(self):
+        fences = []
+        for player in self.players:
+            fences.extend(player.fences)
+
+        moves = []
+        for fence in fences:
+            moves.extend(fence.coordinates)
+
+        return moves
 
     def finish(self):
         self.board.close_window()

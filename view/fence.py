@@ -15,6 +15,7 @@ class Fence:
         self.position = position
         self.direction = direction
         self.color = color
+        self.coordinates = [[self.position, ], ]
         self._current_element = None
 
     def get_rectangle(
@@ -31,11 +32,17 @@ class Fence:
                 Point(field.left, field.top - width),
                 Point(field.left + height, field.top)
             )
+
+            self.coordinates.append([self.position.right(), self.position.right().top()])
+            self.coordinates[0].append(self.position.top())
         if self.direction == FenceDirection.VERTICAL:
             rectangle = Rectangle(
                 Point(field.left - width, field.top),
                 Point(field.left, field.top + height)
             )
+
+            self.coordinates.append([self.position.bottom(), self.position.bottom().left()])
+            self.coordinates[0].append(self.position.left())
         rectangle.setFill(self.color.value)
         rectangle.setWidth(0)
         self._current_element = rectangle
