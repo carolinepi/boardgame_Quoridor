@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Any
 
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
@@ -32,7 +32,7 @@ class StepCalculatorController:
     def get_valid_pawn_steps(
             self,
             position: GridPosition,
-            players_positions: List[GridPosition],
+            players_positions:  List[Tuple[Any, Any]],
             blocked_moves: List[Tuple[int]]
     ) -> List[PawnStep]:
         column, row = position.column, position.row
@@ -69,8 +69,8 @@ class StepCalculatorController:
                         result.append(PawnStep(position, position.right().bottom()))
             else:
                 result.append(PawnStep(position, position.right()))
-        if row != self.first_n:
-            if (column, row - 1) in players_positions and (column, row - 1) not in blocked_coordinates:
+        if row != self.first_n and (column, row - 1) not in blocked_coordinates:
+            if (column, row - 1) in players_positions:
                 blocked = self.get_blocked_coordinates_for_position(position.top(), blocked_moves)
 
                 if row - 1 != self.first_n and (column, row - 2) not in blocked:
