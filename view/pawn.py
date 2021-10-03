@@ -31,4 +31,3 @@ class Pawn:
     def current_element(self) -> Optional[PawnFigure]:
         if self._figure is not None:
             return self._figure
-

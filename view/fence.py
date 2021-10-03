@@ -18,6 +18,8 @@ class Fence:
         self.position = position
         self.direction = direction
         self.color = color
+        self.coordinates = [[self.position, ], ]
+        self._current_element = None
         self._figure = None
 
     def get_figure(
@@ -33,12 +35,16 @@ class Fence:
                 Point(field.left + height, field.top),
                 self.color
             )
+            self.coordinates.append([self.position.right(), self.position.right().top()])
+            self.coordinates[0].append(self.position.top())
         if self.direction == FenceDirection.VERTICAL:
             self._figure = FenceFigure(
                 Point(field.left - inner_size, field.top),
                 Point(field.left, field.top + height),
                 self.color
             )
+            self.coordinates.append([self.position.bottom(), self.position.bottom().left()])
+            self.coordinates[0].append(self.position.left())
         return self._figure
 
     @property

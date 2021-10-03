@@ -14,7 +14,6 @@ class GridPosition:
         return GridPosition(self.column, self.row - 1)
 
     def bottom(self):
-
         return GridPosition(self.column, self.row + 1)
 
     def clone(self):
