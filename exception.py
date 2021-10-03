@@ -1,0 +1,6 @@
+class BaseError(Exception):
+    ...
+
+
+class NoWayError(BaseError):
+    ...

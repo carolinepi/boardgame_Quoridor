@@ -1,6 +1,7 @@
 import random
 from typing import Optional, Union, List
 
+from exception import NoWayError
 from models.fence_step import FenceStep
 from models.pawn_step import PawnStep
 
@@ -13,7 +14,10 @@ class Bot(Player):
 
     @staticmethod
     def random_pawn_move(valid_pawn_steps: List[PawnStep]):
-        return random.choice(valid_pawn_steps)
+        try:
+            return random.choice(valid_pawn_steps)
+        except IndexError:
+            raise NoWayError
 
     @staticmethod
     def random_put_fence(valid_fence_steps: List[FenceStep]):
