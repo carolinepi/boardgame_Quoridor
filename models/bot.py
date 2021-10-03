@@ -7,11 +7,11 @@ from models.pawn_step import PawnStep
 from models.player import Player
 
 from view.board import Board
-from view.utils import ColorEnum, ColorType
+from view.utils import ColorEnum
 
 
 class Bot(Player):
-    def __init__(self, name: str = 'Player', color: ColorType = ColorEnum.RED):
+    def __init__(self, name: str = 'Player', color: ColorEnum = ColorEnum.RED):
         super().__init__(name, color)
 
     @staticmethod

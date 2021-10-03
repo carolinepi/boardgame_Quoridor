@@ -1,14 +1,14 @@
 from models.grid_position import GridPosition
 from view.facade import PawnFigure
 from view.field import Field
-from view.utils import ColorType
+from view.utils import ColorEnum
 
 
 class Pawn:
     def __init__(
         self,
         position: GridPosition,
-        color: ColorType,
+        color: ColorEnum,
         name: str,
     ):
         self.position = position
