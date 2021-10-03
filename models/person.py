@@ -7,11 +7,11 @@ from controllers.utils import PlayerActionKey
 from models.player import Player
 
 from view.board import Board
-from view.utils import ColorEnum, ColorType
+from view.utils import ColorEnum
 
 
 class Person(Player):
-    def __init__(self, name: str = 'Player', color: ColorType = ColorEnum.RED):
+    def __init__(self, name: str = 'Player', color: ColorEnum = ColorEnum.RED):
         super().__init__(name, color)
 
     def play(
@@ -23,7 +23,7 @@ class Person(Player):
         while True:
             key = board.get_keyboard()
             if key == PlayerActionKey.PAWN_STEP.value:
-                with board.draw_valid_pawn_step(self.color, self.name, valid_pawn_steps):
+                with board.draw_valid_pawn_step(self.name, valid_pawn_steps):
                     click = board.get_mouse()
                     pawn_step = board.get_pawn_step_from_mouse_position(
                         self.pawn, click.x, click.y, valid_pawn_steps

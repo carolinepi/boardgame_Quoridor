@@ -1,17 +1,18 @@
 from contextlib import contextmanager
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
-from graphics import GraphWin, Rectangle, Point, Text, Circle
+from graphics import GraphWin, Point
 
 from controllers.config_controller import Config
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
+from view.facade import PawnFigure, Background
 from view.fence import Fence
 
 from view.field import Field
 from view.pawn import Pawn
-from view.utils import ColorEnum, ColorType, FenceDirection
+from view.utils import ColorEnum, FenceDirection
 
 
 class Board:
@@ -40,29 +41,27 @@ class Board:
         self.window = GraphWin("Quoridor", side, side)
 
     def draw(self) -> None:
-        background = Rectangle(Point(0, 0), Point(self.n, self.n))
-        background.setFill(ColorEnum.WHITE.value)
-        background.setWidth(0)
+        background = Background(
+            Point(0, 0),
+            Point(self.n, self.n),
+            ColorEnum.WHITE
+        )
         background.draw(self.window)
         for column in range(self.n):
             for row in range(self.n):
-                rectangle = self.field[column][row].get_rectangle()
-                rectangle.draw(self.window)
+                field = self.field[column][row].get_field_figure()
+                field.draw(self.window)
 
-    def draw_pawn(self, pawn: Pawn, field: Field) -> Tuple[Circle, Text]:
-        circle, label = pawn.get_circle_and_label(
-            field, self.square_size
-        )
-        circle.draw(self.window)
-        label.draw(self.window)
-        return circle, label
+    def draw_pawn(self, pawn: Pawn, field: Field) -> PawnFigure:
+        figure = pawn.get_figure(field, self.square_size)
+        figure.draw(self.window)
+        return figure
 
     def undraw_pawn(self, pawn: Pawn) -> None:
-        for element in pawn.current_elements:
-            element.undraw()
+        pawn.current_element.undraw()
 
     def draw_fence(self, fence: Fence, field: Field) -> None:
-        rectangle = fence.get_rectangle(
+        rectangle = fence.get_figure(
             field, self.square_size, self.inner_size
         )
         rectangle.draw(self.window)
@@ -100,22 +99,19 @@ class Board:
     @contextmanager
     def draw_valid_pawn_step(
         self,
-        color: ColorType,
         name: str,
         valid_steps: List[PawnStep]
     ):
         hiding_elements = []
         for valid_step in valid_steps:
             position = valid_step.to_position.clone()
-            # TODO: fix colors
-            color = ColorEnum.mix_colors(color, ColorEnum.WHITE)
             possible_pawn = Pawn(
                 position=position,
-                color=color,
+                color=ColorEnum.BLACK,
                 name=name
             )
             field = self.get_field(position)
-            hiding_elements.extend(self.draw_pawn(possible_pawn, field))
+            hiding_elements.append(self.draw_pawn(possible_pawn, field))
         yield
         for hiding_element in hiding_elements:
             hiding_element.undraw()

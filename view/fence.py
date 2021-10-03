@@ -1,15 +1,16 @@
 from graphics import Rectangle, Point
 
 from models.grid_position import GridPosition
+from view.facade import FenceFigure
 from view.field import Field
-from view.utils import FenceDirection, ColorType
+from view.utils import FenceDirection, ColorEnum
 
 
 class Fence:
     def __init__(
         self,
         position: GridPosition,
-        color: ColorType,
+        color: ColorEnum,
         direction: FenceDirection,
     ):
         self.position = position
@@ -17,38 +18,38 @@ class Fence:
         self.color = color
         self.coordinates = [[self.position, ], ]
         self._current_element = None
+        self._figure = None
 
-    def get_rectangle(
+    def get_figure(
         self,
         field: Field,
         square_size: int,
         inner_size: int,
-    ) -> Rectangle:
+    ) -> FenceFigure:
         height = 2 * square_size + inner_size
-        width = inner_size
-        rectangle = None
         if self.direction == FenceDirection.HORIZONTAL:
-            rectangle = Rectangle(
-                Point(field.left, field.top - width),
-                Point(field.left + height, field.top)
+            self._figure = FenceFigure(
+                Point(field.left, field.top - inner_size),
+                Point(field.left + height, field.top),
+                self.color
             )
 
             self.coordinates.append([self.position.right(), self.position.right().top()])
             self.coordinates[0].append(self.position.top())
         if self.direction == FenceDirection.VERTICAL:
-            rectangle = Rectangle(
-                Point(field.left - width, field.top),
-                Point(field.left, field.top + height)
+            self._figure = FenceFigure(
+                Point(field.left - inner_size, field.top),
+                Point(field.left, field.top + height),
+                self.color
             )
-
             self.coordinates.append([self.position.bottom(), self.position.bottom().left()])
             self.coordinates[0].append(self.position.left())
         rectangle.setFill(self.color.value)
         rectangle.setWidth(0)
         self._current_element = rectangle
-        return rectangle
+        return self._figure
 
     @property
     def current_element(self) -> Rectangle:
-        if self._current_element is not None:
-            return self._current_element
+        if self._figure is not None:
+            return self._figure
