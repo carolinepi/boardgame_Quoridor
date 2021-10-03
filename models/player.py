@@ -8,13 +8,13 @@ from view.board import Board
 from view.fence import Fence
 from view.field import Field
 from view.pawn import Pawn
-from view.utils import ColorEnum, ColorType, FenceDirection
+from view.utils import ColorEnum, FenceDirection
 
 
 class Player:
     LIMIT_FENCES = 10
 
-    def __init__(self, name: str = 'Player', color: ColorType = ColorEnum.RED):
+    def __init__(self, name: str = 'Player', color: ColorEnum = ColorEnum.RED):
         self.name = name
         self.color = color
         self.pawn = None

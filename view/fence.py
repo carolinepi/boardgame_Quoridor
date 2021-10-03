@@ -3,14 +3,14 @@ from graphics import Rectangle, Point
 from models.grid_position import GridPosition
 from view.facade import FenceFigure
 from view.field import Field
-from view.utils import FenceDirection, ColorType
+from view.utils import FenceDirection, ColorEnum
 
 
 class Fence:
     def __init__(
         self,
         position: GridPosition,
-        color: ColorType,
+        color: ColorEnum,
         direction: FenceDirection,
     ):
         self.position = position
