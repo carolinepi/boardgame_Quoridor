@@ -11,8 +11,6 @@ from view.utils import ColorEnum
 
 
 class Person(Player):
-    def __init__(self, name: str = 'Player', color: ColorEnum = ColorEnum.RED):
-        super().__init__(name, color)
 
     def play(
         self,

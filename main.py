@@ -22,7 +22,7 @@ if __name__ == '__main__':
     game = GameController(players, board, calculator_controller)
     game.init_game_board()
     while True:
-        game.init_game()
+        game.start_game()
         game.play_game()
         key = board.get_keyboard()
         if key == PlayerActionKey.RETRY_GAME.value:

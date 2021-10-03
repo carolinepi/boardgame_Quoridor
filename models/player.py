@@ -56,11 +56,12 @@ class Player:
     def can_fences_step(self):
         if len(self.fences) >= self.LIMIT_FENCES:
             print(f'{self.name} can`t put fence. Limit: {self.LIMIT_FENCES}')
-        return len(self.fences) < self.LIMIT_FENCES
+            return False
+        return True
 
     @property
     def has_won(self) -> bool:
-        return True if self.pawn.position in self.end_position else False
+        return self.pawn.position in self.end_position
 
     def clean_player_data(self) -> None:
         self.pawn = None

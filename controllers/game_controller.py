@@ -35,8 +35,7 @@ class GameController:
             end_positions = self.board.get_end_positions(start_position)
             player.set_end_position(end_positions)
 
-    def init_game(self):
-        self.board.draw()
+    def start_game(self):
         self.set_players_position()
         for player in self.players:
             field = self.board.get_field(player.start_position)
@@ -44,6 +43,7 @@ class GameController:
 
     def init_game_board(self):
         self.board.create_window()
+        self.board.draw()
 
     def repeat_game(self):
         for player in self.players:

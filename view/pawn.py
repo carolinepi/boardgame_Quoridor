@@ -1,3 +1,5 @@
+from typing import Optional
+
 from models.grid_position import GridPosition
 from view.facade import PawnFigure
 from view.field import Field
@@ -26,7 +28,7 @@ class Pawn:
         return self._figure
 
     @property
-    def current_element(self) -> PawnFigure:
+    def current_element(self) -> Optional[PawnFigure]:
         if self._figure is not None:
             return self._figure
 

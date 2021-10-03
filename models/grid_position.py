@@ -23,14 +23,8 @@ class GridPosition:
     def __eq__(self, other: 'GridPosition'):
         return self.column == other.column and self.row == other.row
 
-    def __ne__(self, other: 'GridPosition'):
-        return not self.__eq__(other)
-
     def __hash__(self):
         return hash((self.column, self.row))
-
-    def __str__(self):
-        return f'GridPosition({self.column}, {self.row})'
 
     def __repr__(self):
         return f'GridPosition({self.column}, {self.row})'

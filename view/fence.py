@@ -1,4 +1,6 @@
-from graphics import Rectangle, Point
+from typing import Optional
+
+from graphics import Point
 
 from models.grid_position import GridPosition
 from view.facade import FenceFigure
@@ -40,6 +42,6 @@ class Fence:
         return self._figure
 
     @property
-    def current_element(self) -> Rectangle:
+    def current_element(self) -> Optional[FenceFigure]:
         if self._figure is not None:
             return self._figure

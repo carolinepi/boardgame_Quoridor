@@ -8,7 +8,7 @@ except:
    import Tkinter as tk
 
 
-class IFacade:
+class BaseFacade:
 
     def auto_set(self, color: ColorEnum) -> None:
         raise NotImplemented()
@@ -17,7 +17,7 @@ class IFacade:
         raise NotImplemented()
 
 
-class RectangleFacade(IFacade):
+class RectangleFacade(BaseFacade):
 
     def __init__(
         self, p1: Point, p2: Point, color: ColorEnum
@@ -35,8 +35,12 @@ class RectangleFacade(IFacade):
     def undraw(self) -> None:
         self.rectangle.undraw()
 
+    def __repr__(self) -> str:
+        return f'{type(self).__name__} ' \
+               f'({self.rectangle.p1}, {self.rectangle.p2})'
 
-class PawnFigure(IFacade):
+
+class PawnFigure(BaseFacade):
 
     def __init__(
         self,
@@ -71,18 +75,12 @@ class PawnFigure(IFacade):
 
 
 class FenceFigure(RectangleFacade):
-
-    def __repr__(self) -> str:
-        return f'PawnFigure({self.rectangle.p1}, {self.rectangle.p2})'
+    pass
 
 
 class Background(RectangleFacade):
-
-    def __repr__(self) -> str:
-        return f'Background({self.rectangle.p1}, {self.rectangle.p2})'
+    pass
 
 
 class FieldFigure(RectangleFacade):
-
-    def __repr__(self) -> str:
-        return f'FieldFigure({self.rectangle.p1}, {self.rectangle.p2})'
+    pass

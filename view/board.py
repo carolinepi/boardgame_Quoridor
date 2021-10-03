@@ -32,7 +32,7 @@ class Board:
             for column in range(self.n)
         ]
         self.last_n = self.n - 1
-        self.middle_n = int(self.last_n / 2)
+        self.middle_n = self.last_n // 2
         self.first_n = 0
         self.window = None
 

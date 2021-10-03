@@ -12,7 +12,7 @@ class StepCalculatorController:
         self.n = n
         self.first_n = 0
         self.last_n = self.n - 1
-        self.middle_n = int(self.last_n / 2)
+        self.middle_n = self.last_n // 2
 
     def get_valid_fence_steps_for_position(
         self, position: GridPosition
