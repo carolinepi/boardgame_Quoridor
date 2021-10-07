@@ -110,3 +110,34 @@ class StepCalculatorController:
                 blocked_coordinates.append((move[0].column, move[0].row))
 
         return blocked_coordinates
+
+    def get_valid_fence_steps(self, fences, blocked_moves):
+        valid_fence_steps = []
+        fences_position = [(fence.position, fence.direction) for fence in fences]
+        fences_position.extend(self.get_blocked_grids_for_fences(fences))
+
+        print(fences_position)
+
+        for row in range(self.last_n):
+            for column in range(1, self.last_n+1):
+
+                position = GridPosition(column, row)
+                if (position, FenceDirection.HORIZONTAL) not in fences_position:
+                    valid_fence_steps.append(FenceStep(position, FenceDirection.HORIZONTAL))
+
+                if (position, FenceDirection.VERTICAL) not in fences_position:
+                    valid_fence_steps.append(FenceStep(position, FenceDirection.VERTICAL))
+
+        return valid_fence_steps
+
+    def get_blocked_grids_for_fences(self, fences):
+        positions = []
+        for fence in fences:
+            if fence.direction == FenceDirection.VERTICAL:
+                positions.append((fence.position.bottom(), FenceDirection.VERTICAL))
+                positions.append((fence.position.bottom().left(), FenceDirection.HORIZONTAL))
+            else:
+                positions.append((fence.position.right(), FenceDirection.HORIZONTAL))
+                positions.append((fence.position.right().top(), FenceDirection.VERTICAL))
+
+        return positions
