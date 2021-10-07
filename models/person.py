@@ -31,7 +31,7 @@ class Person(Player):
             if key == PlayerActionKey.FENCE_STEP.value and self.can_fences_step:
                 click = board.get_mouse()
                 fence_step = board.get_fence_step_from_mouse_position(
-                    click.x, click.y
+                    click.x, click.y, valid_fence_steps
                 )
                 if fence_step is not None:
                     return fence_step
