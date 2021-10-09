@@ -116,8 +116,6 @@ class StepCalculatorController:
         fences_position = [(fence.position, fence.direction) for fence in fences]
         fences_position.extend(self.get_blocked_grids_for_fences(fences))
 
-        print(fences_position)
-
         for row in range(self.last_n):
             for column in range(1, self.last_n+1):
 
@@ -135,8 +133,10 @@ class StepCalculatorController:
         for fence in fences:
             if fence.direction == FenceDirection.VERTICAL:
                 positions.append((fence.position.bottom(), FenceDirection.VERTICAL))
+                positions.append((fence.position.top(), FenceDirection.VERTICAL))
                 positions.append((fence.position.bottom().left(), FenceDirection.HORIZONTAL))
             else:
+                positions.append((fence.position.left(), FenceDirection.HORIZONTAL))
                 positions.append((fence.position.right(), FenceDirection.HORIZONTAL))
                 positions.append((fence.position.right().top(), FenceDirection.VERTICAL))
 
