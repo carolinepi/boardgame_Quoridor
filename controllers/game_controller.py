@@ -83,6 +83,13 @@ class GameController:
                         valid_pawn_steps,
                         valid_fence_steps,
                     )
+
+                    # valid_step = self.calculator_controller.is_fence_step_valid(
+                    #     player.pawn.position,
+                    #     blocked_moves,
+                    #     player.start_position
+                    # )
+
                     if isinstance(action, PawnStep):
                         finished = self.play_pawn_step(player, action)
                         if finished:

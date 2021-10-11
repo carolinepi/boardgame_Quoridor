@@ -117,10 +117,10 @@ class StepCalculatorController:
         fences_position.extend(self.get_blocked_grids_for_fences(fences))
 
         for row in range(self.last_n):
-            for column in range(1, self.last_n+1):
+            for column in range(1, self.n):
 
                 position = GridPosition(column, row)
-                if (position, FenceDirection.HORIZONTAL) not in fences_position:
+                if row != 0 and (position, FenceDirection.HORIZONTAL) not in fences_position:
                     valid_fence_steps.append(FenceStep(position, FenceDirection.HORIZONTAL))
 
                 if (position, FenceDirection.VERTICAL) not in fences_position:
@@ -141,3 +141,80 @@ class StepCalculatorController:
                 positions.append((fence.position.right().top(), FenceDirection.VERTICAL))
 
         return positions
+
+    def is_fence_step_valid(self, position, blocked_moves, player_start_position):
+        matrix = self._get_moves_to_grid(blocked_moves)
+        last_row = self.last_n
+
+        if player_start_position.row == self.last_n:
+            last_row = self.first_n
+
+        for column in range(self.n):
+            result = self._calculate_path_from_position(
+                matrix,
+                position,
+                GridPosition(column, last_row)
+            )
+
+            if result:
+                return result
+
+        return False
+
+    def _get_moves_to_grid(self, blocked_moves):
+        """
+        Create directed graph dict
+        :param blocked_moves:
+        :return:
+        """
+        moves = {}
+        for row in range(self.n):
+            for column in range(self.n):
+                grid = GridPosition(column, row)
+                blocked_coordinates = self.get_blocked_coordinates_for_position(grid, blocked_moves)
+                result = {}
+                if column != self.first_n and (column - 1, row) not in blocked_coordinates:
+                    result[GridPosition(column - 1, row)] = 1
+                if column != self.last_n and (column + 1, row) not in blocked_coordinates:
+                    result[GridPosition(column + 1, row)] = 1
+                if row != self.first_n and (column, row - 1) not in blocked_coordinates:
+                    result[GridPosition(column, row - 1)] = 1
+                if row != self.last_n and (column, row + 1) not in blocked_coordinates:
+                    result[GridPosition(column, row + 1)] = 1
+
+                moves[grid] = result
+
+        return moves
+
+    def _calculate_path_from_position(
+            self,
+            matrix,
+            position,
+            destination
+    ):
+        """
+        Dijkstra for grids
+        :param position:
+        :return:
+        """
+        visited = {position: 0, }
+        current = position
+        unvisited = {grid: float('inf') for grid in matrix if grid != position}
+
+        while unvisited:
+            for grid in matrix[current]:
+                if grid == destination:
+                    return True
+                if grid not in visited:
+                    if unvisited[grid] == float('inf'):
+                        unvisited[grid] = visited[current] + matrix[current][grid]
+                    else:
+                        unvisited[grid] += matrix[current][grid]
+
+            current = min(unvisited, key=unvisited.get)
+            if unvisited[current] == float('inf'):
+                return False
+            visited[current] = unvisited[current]
+            unvisited.pop(current)
+
+        return False
