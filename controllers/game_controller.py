@@ -10,6 +10,7 @@ from controllers.step_calculator_controller import StepCalculatorController
 from models.player import Player
 
 from view.board import Board
+from view.fence import Fence
 
 
 class GameController:
@@ -62,26 +63,27 @@ class GameController:
                     players_position = self.get_players_positions(player)
                     blocked_moves = self.get_fences_blocked_moves()
                     fences = self.get_all_fences()
-                    players_current_and_start_positions = self.get_players_current_and_start_positions()
+                    players_cur_start_positions = self.\
+                        get_players_current_and_start_positions()
 
                     valid_pawn_steps = self.calculator_controller.\
                         get_valid_pawn_steps(
-                            player.pawn.position,
-                            players_position,
-                            blocked_moves
+                            position=player.pawn.position,
+                            players_positions=players_position,
+                            blocked_moves=blocked_moves
                         )
 
                     valid_fence_steps = self.calculator_controller.\
                         get_valid_fence_steps(
-                            fences,
-                            blocked_moves,
-                            players_current_and_start_positions
+                            fences=fences,
+                            blocked_moves=blocked_moves,
+                            players_positions=players_cur_start_positions
                         )
 
                     action = player.play(
-                        self.board,
-                        valid_pawn_steps,
-                        valid_fence_steps,
+                        board=self.board,
+                        valid_pawn_steps=valid_pawn_steps,
+                        valid_fence_steps=valid_fence_steps,
                     )
 
                     if isinstance(action, PawnStep):
@@ -111,14 +113,21 @@ class GameController:
         fence = player.put_fence(action.position, action.direction)
         self.board.put_fence(fence, field)
 
-    def get_players_positions(self, current_player) -> List[Tuple[Any, Any]]:
-        return [(player.pawn.position.column, player.pawn.position.row)
-                for player in self.players if player != current_player]
+    def get_players_positions(self, current_player) -> List[Tuple[int, int]]:
+        return [
+            (player.pawn.position.column, player.pawn.position.row)
+            for player in self.players if player != current_player
+        ]
 
-    def get_players_current_and_start_positions(self) -> List[Tuple[GridPosition, GridPosition]]:
-        return [(player.pawn.position, player.start_position) for player in self.players]
+    def get_players_current_and_start_positions(
+        self
+    ) -> List[Tuple[GridPosition, GridPosition]]:
+        return [
+            (player.pawn.position, player.start_position)
+            for player in self.players
+        ]
 
-    def get_fences_blocked_moves(self):
+    def get_fences_blocked_moves(self) -> List[List[Tuple[int, int]]]:
         fences = self.get_all_fences()
 
         moves = []
@@ -127,7 +136,7 @@ class GameController:
 
         return moves
 
-    def get_all_fences(self):
+    def get_all_fences(self) -> List[Fence]:
         fences = []
         for player in self.players:
             fences.extend(player.fences)

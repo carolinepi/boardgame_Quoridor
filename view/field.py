@@ -6,7 +6,12 @@ from view.utils import ColorEnum
 
 
 class Field:
-    def __init__(self, position: GridPosition, square_size: int, inner_size: int):
+    def __init__(
+        self,
+        position: GridPosition,
+        square_size: int,
+        inner_size: int
+    ):
         self.position = position
         self.square_size = square_size
         self.inner_size = inner_size
