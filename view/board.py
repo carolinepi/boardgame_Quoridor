@@ -152,7 +152,7 @@ class Board:
         # horizontal fence
         elif x % self.size < self.square_size < y % self.size:
             field = self.get_field_from_mouse_position(x, y + self.square_size)
-            fence_step = FenceStep(field.position, FenceDirection.VERTICAL)
+            fence_step = FenceStep(field.position, FenceDirection.HORIZONTAL)
         # on inner crossing space
         elif (
             x % self.size > self.square_size and

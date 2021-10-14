@@ -1,4 +1,4 @@
 app:
-  n: 9
+  n: 5
   square_size: 64
   inner_size: 8

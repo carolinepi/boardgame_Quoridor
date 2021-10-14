@@ -3,7 +3,8 @@ from typing import List, Tuple, Any
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
-from view.utils import FenceDirection
+from view.fence import Fence
+from view.utils import FenceDirection, ColorEnum
 
 
 class StepCalculatorController:
@@ -32,7 +33,7 @@ class StepCalculatorController:
     def get_valid_pawn_steps(
             self,
             position: GridPosition,
-            players_positions:  List[Tuple[Any, Any]],
+            players_positions: List[Tuple[Any, Any]],
             blocked_moves: List[Tuple[int]]
     ) -> List[PawnStep]:
         column, row = position.column, position.row
@@ -77,10 +78,10 @@ class StepCalculatorController:
                     result.append(PawnStep(position, position.top().top()))
                 else:
                     if row - 1 != self.first_n and column + 1 != self.last_n \
-                            and (column+1, row-1) not in blocked+blocked_coordinates:
+                            and (column + 1, row - 1) not in blocked + blocked_coordinates:
                         result.append(PawnStep(position, position.top().right()))
                     if row - 1 != self.first_n and column - 1 != self.first_n \
-                            and (column-1, row-1) not in blocked+blocked_coordinates:
+                            and (column - 1, row - 1) not in blocked + blocked_coordinates:
                         result.append(PawnStep(position, position.top().left()))
             else:
                 result.append(PawnStep(position, position.top()))
@@ -111,22 +112,50 @@ class StepCalculatorController:
 
         return blocked_coordinates
 
-    def get_valid_fence_steps(self, fences, blocked_moves):
+    def get_valid_fence_steps(self, fences, blocked_moves, players_positions):
         valid_fence_steps = []
         fences_position = [(fence.position, fence.direction) for fence in fences]
         fences_position.extend(self.get_blocked_grids_for_fences(fences))
 
         for row in range(self.last_n):
-            for column in range(1, self.n):
+            for column in range(0, self.n):
 
                 position = GridPosition(column, row)
-                if row != 0 and (position, FenceDirection.HORIZONTAL) not in fences_position:
-                    valid_fence_steps.append(FenceStep(position, FenceDirection.HORIZONTAL))
+                if row != 0 and column != self.last_n and (position, FenceDirection.HORIZONTAL) not in fences_position:
+                    step_is_valid = self._check_new_fence_valid(
+                        position=position,
+                        direction=FenceDirection.HORIZONTAL,
+                        blocked_moves=blocked_moves,
+                        players_position=players_positions
+                    )
+
+                    if step_is_valid:
+                        valid_fence_steps.append(FenceStep(position, FenceDirection.HORIZONTAL))
 
                 if (position, FenceDirection.VERTICAL) not in fences_position:
-                    valid_fence_steps.append(FenceStep(position, FenceDirection.VERTICAL))
+                    step_is_valid = self._check_new_fence_valid(
+                        position=position,
+                        direction=FenceDirection.VERTICAL,
+                        blocked_moves=blocked_moves,
+                        players_position=players_positions
+                    )
+
+                    if step_is_valid:
+                        valid_fence_steps.append(FenceStep(position, FenceDirection.VERTICAL))
 
         return valid_fence_steps
+
+    def _check_new_fence_valid(self, position, direction, blocked_moves, players_position) -> bool:
+        fence = Fence(position, ColorEnum.RED, direction)
+        new_blocked_moves = blocked_moves + fence.coordinates
+        valid_step = False
+
+        for players_position in players_position:
+            valid_step = self.is_fence_step_valid(players_position[0], new_blocked_moves, players_position[1])
+            if not valid_step:
+                break
+
+        return valid_step
 
     def get_blocked_grids_for_fences(self, fences):
         positions = []
@@ -151,9 +180,9 @@ class StepCalculatorController:
 
         for column in range(self.n):
             result = self._calculate_path_from_position(
-                matrix,
-                position,
-                GridPosition(column, last_row)
+                matrix=matrix,
+                position=position,
+                destination=GridPosition(column, last_row)
             )
 
             if result:
@@ -162,11 +191,6 @@ class StepCalculatorController:
         return False
 
     def _get_moves_to_grid(self, blocked_moves):
-        """
-        Create directed graph dict
-        :param blocked_moves:
-        :return:
-        """
         moves = {}
         for row in range(self.n):
             for column in range(self.n):
@@ -186,17 +210,7 @@ class StepCalculatorController:
 
         return moves
 
-    def _calculate_path_from_position(
-            self,
-            matrix,
-            position,
-            destination
-    ):
-        """
-        Dijkstra for grids
-        :param position:
-        :return:
-        """
+    def _calculate_path_from_position(self, matrix, position, destination):
         visited = {position: 0, }
         current = position
         unvisited = {grid: float('inf') for grid in matrix if grid != position}
