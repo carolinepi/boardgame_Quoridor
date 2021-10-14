@@ -138,26 +138,38 @@ class Board:
         return None
     
     def get_fence_step_from_mouse_position(
-        self, x: int, y: int,
+        self, x: int, y: int, valid_fence_steps: List[FenceStep],
     ) -> Optional[FenceStep]:
         if self.get_field_from_mouse_position(x, y) is not None:
             return None
+
+        fence_step = None
+
         # vertical fence
-        if x % self.size > self.square_size and y % self.size < self.square_size:
+        if x % self.size > self.square_size > y % self.size:
             field = self.get_field_from_mouse_position(x + self.square_size, y)
-            return FenceStep(field.position, FenceDirection.VERTICAL)
-            # return FenceStep(field.position, FenceDirection.VERTICAL) if self.isValidFencePlacing(field.position, FenceDirection.VERTICAL) else None
+            fence_step = FenceStep(field.position, FenceDirection.VERTICAL)
         # horizontal fence
-        if x % self.size < self.square_size and y % self.size > self.square_size:
+        elif x % self.size < self.square_size < y % self.size:
             field = self.get_field_from_mouse_position(x, y + self.square_size)
-            # return FenceStep(field.position, FenceDirection.HORIZONTAL) if self.isValidFencePlacing(field.position, FenceDirection.HORIZONTAL) else None
-            return FenceStep(field.position, FenceDirection.HORIZONTAL)
+            fence_step = FenceStep(field.position, FenceDirection.HORIZONTAL)
         # on inner crossing space
-        if x % self.size > self.square_size and y % self.size > self.square_size:
-            field = self.get_field_from_mouse_position(x + self.square_size, y + self.square_size)
-            direction = FenceDirection.HORIZONTAL if field.left - x < field.top - y else FenceDirection.VERTICAL
-            # return FenceStep(field.position, direction) if self.isValidFencePlacing(field.position, direction) else None
-            return FenceStep(field.position, direction)
+        elif (
+            x % self.size > self.square_size and
+            y % self.size > self.square_size
+        ):
+            field = self.get_field_from_mouse_position(
+                x + self.square_size, y + self.square_size
+            )
+            direction = (
+                FenceDirection.HORIZONTAL
+                if field.left - x < field.top - y
+                else FenceDirection.VERTICAL
+            )
+            fence_step = FenceStep(field.position, direction)
+
+        if fence_step:
+            return fence_step if fence_step in valid_fence_steps else None
         return None
 
     def move_pawn(self, pawn: Pawn, field: Field) -> None:

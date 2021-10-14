@@ -22,6 +22,13 @@ class Fence:
         self._current_element = None
         self._figure = None
 
+        if self.direction == FenceDirection.HORIZONTAL:
+            self.coordinates.append([self.position.right(), self.position.right().top()])
+            self.coordinates[0].append(self.position.top())
+        if self.direction == FenceDirection.VERTICAL:
+            self.coordinates.append([self.position.bottom(), self.position.bottom().left()])
+            self.coordinates[0].append(self.position.left())
+
     def get_figure(
         self,
         field: Field,
@@ -35,16 +42,13 @@ class Fence:
                 Point(field.left + height, field.top),
                 self.color
             )
-            self.coordinates.append([self.position.right(), self.position.right().top()])
-            self.coordinates[0].append(self.position.top())
         if self.direction == FenceDirection.VERTICAL:
             self._figure = FenceFigure(
                 Point(field.left - inner_size, field.top),
                 Point(field.left, field.top + height),
                 self.color
             )
-            self.coordinates.append([self.position.bottom(), self.position.bottom().left()])
-            self.coordinates[0].append(self.position.left())
+
         return self._figure
 
     @property
