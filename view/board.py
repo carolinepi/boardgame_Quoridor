@@ -116,6 +116,24 @@ class Board:
         for hiding_element in hiding_elements:
             hiding_element.undraw()
 
+    @contextmanager
+    def draw_valid_fence_step(
+        self,
+        valid_steps: List[FenceStep]
+    ):
+        hiding_elements = []
+        for valid_step in valid_steps:
+            possible_fence = Fence(
+                position=valid_step.position,
+                direction=valid_step.direction,
+                color=ColorEnum.BLACK,
+            )
+            field = self.get_field(valid_step.position)
+            hiding_elements.append(self.draw_fence(possible_fence, field))
+        yield
+        for hiding_element in hiding_elements:
+            hiding_element.undraw()
+
     def get_field_from_mouse_position(self, x: int, y: int) -> Optional[Field]:
         if x % self.size > self.square_size or y % self.size > self.square_size:
             return None
