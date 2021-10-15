@@ -7,7 +7,7 @@ from controllers.config_controller import Config
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
-from view.facade import PawnFigure, Background
+from view.facade import PawnFigure, Background, FenceFigure
 from view.fence import Fence
 
 from view.field import Field
@@ -60,11 +60,12 @@ class Board:
     def undraw_pawn(self, pawn: Pawn) -> None:
         pawn.current_element.undraw()
 
-    def draw_fence(self, fence: Fence, field: Field) -> None:
-        rectangle = fence.get_figure(
+    def draw_fence(self, fence: Fence, field: Field) -> FenceFigure:
+        figure = fence.get_figure(
             field, self.square_size, self.inner_size
         )
-        rectangle.draw(self.window)
+        figure.draw(self.window)
+        return figure
 
     def undraw_fence(self, fence: Fence):
         fence.current_element.undraw()
@@ -104,14 +105,31 @@ class Board:
     ):
         hiding_elements = []
         for valid_step in valid_steps:
-            position = valid_step.to_position.clone()
             possible_pawn = Pawn(
-                position=position,
+                position=valid_step.to_position,
                 color=ColorEnum.BLACK,
                 name=name
             )
-            field = self.get_field(position)
+            field = self.get_field(valid_step.to_position)
             hiding_elements.append(self.draw_pawn(possible_pawn, field))
+        yield
+        for hiding_element in hiding_elements:
+            hiding_element.undraw()
+
+    @contextmanager
+    def draw_valid_fence_step(
+        self,
+        valid_steps: List[FenceStep]
+    ):
+        hiding_elements = []
+        for valid_step in valid_steps:
+            possible_fence = Fence(
+                position=valid_step.position,
+                direction=valid_step.direction,
+                color=ColorEnum.BLACK,
+            )
+            field = self.get_field(valid_step.position)
+            hiding_elements.append(self.draw_fence(possible_fence, field))
         yield
         for hiding_element in hiding_elements:
             hiding_element.undraw()
