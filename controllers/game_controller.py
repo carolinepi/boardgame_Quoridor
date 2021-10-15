@@ -10,6 +10,7 @@ from controllers.step_calculator_controller import StepCalculatorController
 from models.player import Player
 
 from view.board import Board
+from view.fence import Fence
 
 
 class GameController:
@@ -60,9 +61,10 @@ class GameController:
                 for player in self.players:
 
                     players_position = self.get_players_positions(player)
-                    blocked_moves = self.get_fences_blocked_moves()
                     fences = self.get_all_fences()
-                    players_current_and_start_positions = self.get_players_current_and_start_positions()
+                    blocked_moves = self.get_fences_blocked_moves(fences)
+                    players_current_and_start_positions = \
+                        self.get_players_current_and_start_positions()
 
                     valid_pawn_steps = self.calculator_controller.\
                         get_valid_pawn_steps(
@@ -115,19 +117,23 @@ class GameController:
         return [(player.pawn.position.column, player.pawn.position.row)
                 for player in self.players if player != current_player]
 
-    def get_players_current_and_start_positions(self) -> List[Tuple[GridPosition, GridPosition]]:
-        return [(player.pawn.position, player.start_position) for player in self.players]
+    def get_players_current_and_start_positions(
+        self
+    ) -> List[Tuple[GridPosition, GridPosition]]:
+        return [(player.pawn.position, player.start_position)
+                for player in self.players]
 
-    def get_fences_blocked_moves(self):
-        fences = self.get_all_fences()
-
+    @staticmethod
+    def get_fences_blocked_moves(
+        fences: List[Fence]
+    ) -> List[Tuple[GridPosition, GridPosition]]:
         moves = []
         for fence in fences:
             moves.extend(fence.coordinates)
 
         return moves
 
-    def get_all_fences(self):
+    def get_all_fences(self) -> List[Fence]:
         fences = []
         for player in self.players:
             fences.extend(player.fences)
