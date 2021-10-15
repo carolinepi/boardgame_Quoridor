@@ -23,10 +23,13 @@ class Fence:
         self._figure = None
 
         if self.direction == FenceDirection.HORIZONTAL:
-            self.coordinates.append([self.position.right(), self.position.right().top()])
+            self.coordinates.append(
+                [self.position.right(), self.position.right().top()])
             self.coordinates[0].append(self.position.top())
         if self.direction == FenceDirection.VERTICAL:
-            self.coordinates.append([self.position.bottom(), self.position.bottom().left()])
+            self.coordinates.append(
+                [self.position.bottom(), self.position.bottom().left()]
+            )
             self.coordinates[0].append(self.position.left())
 
     def get_figure(
