@@ -61,8 +61,9 @@ class GameController:
                 for player in self.players:
 
                     players_position = self.get_players_positions(player)
-                    blocked_moves = self.get_fences_blocked_moves()
                     fences = self.get_all_fences()
+                    blocked_moves = self.get_fences_blocked_moves(fences)
+
                     players_cur_start_positions = self.\
                         get_players_current_and_start_positions()
 
@@ -127,9 +128,10 @@ class GameController:
             for player in self.players
         ]
 
-    def get_fences_blocked_moves(self) -> List[List[Tuple[int, int]]]:
-        fences = self.get_all_fences()
-
+    @staticmethod
+    def get_fences_blocked_moves(
+        fences: List[Fence]
+    ) -> List[List[Tuple[int, int]]]:
         moves = []
         for fence in fences:
             moves.extend(fence.coordinates)
