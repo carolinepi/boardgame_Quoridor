@@ -21,7 +21,10 @@ class Bot(Player):
 
     @staticmethod
     def random_put_fence(valid_fence_steps: List[FenceStep]):
-        return random.choice(valid_fence_steps)
+        try:
+            return random.choice(valid_fence_steps)
+        except IndexError:
+            raise NoWayError
 
     def play(
         self,

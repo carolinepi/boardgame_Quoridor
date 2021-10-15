@@ -1,5 +1,6 @@
 from typing import List, Tuple, Dict
 
+from controllers.dijkstra import calculate_path_from_position
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
@@ -268,7 +269,7 @@ class StepCalculatorController:
             last_row = self.first_n
 
         for column in range(self.n):
-            result = self._calculate_path_from_position(
+            result = calculate_path_from_position(
                 matrix=matrix,
                 position=position,
                 destination=GridPosition(column, last_row)
@@ -309,31 +310,3 @@ class StepCalculatorController:
 
         return moves
 
-    def _calculate_path_from_position(
-        self,
-        matrix: Dict[GridPosition, Dict[GridPosition, int]],
-        position: GridPosition,
-        destination: GridPosition
-    ) -> bool:
-        visited = {position: 0, }
-        current = position
-        unvisited = {grid: float('inf') for grid in matrix if grid != position}
-
-        while unvisited:
-            for grid in matrix[current]:
-                if grid == destination:
-                    return True
-                if grid not in visited:
-                    if unvisited[grid] == float('inf'):
-                        unvisited[grid] = visited[current] + \
-                                          matrix[current][grid]
-                    else:
-                        unvisited[grid] += matrix[current][grid]
-
-            current = min(unvisited, key=unvisited.get)
-            if unvisited[current] == float('inf'):
-                return False
-            visited[current] = unvisited[current]
-            unvisited.pop(current)
-
-        return False
