@@ -32,10 +32,10 @@ class StepCalculatorController:
         return result
 
     def get_valid_pawn_steps(
-            self,
-            position: GridPosition,
-            players_positions: List[Tuple[int, int]],
-            blocked_moves:  List[Tuple[GridPosition, GridPosition]]
+        self,
+        position: GridPosition,
+        players_positions: List[Tuple[int, int]],
+        blocked_moves:  List[Tuple[GridPosition, GridPosition]]
     ) -> List[PawnStep]:
         column, row = position.column, position.row
         result = []

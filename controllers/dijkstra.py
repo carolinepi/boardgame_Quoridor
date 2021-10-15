@@ -18,8 +18,7 @@ def calculate_path_from_position(
                 return True
             if grid not in visited:
                 if unvisited[grid] == float('inf'):
-                    unvisited[grid] = visited[current] + \
-                                      matrix[current][grid]
+                    unvisited[grid] = visited[current] + matrix[current][grid]
                 else:
                     unvisited[grid] += matrix[current][grid]
 

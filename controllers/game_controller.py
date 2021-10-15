@@ -114,14 +114,18 @@ class GameController:
         self.board.put_fence(fence, field)
 
     def get_players_positions(self, current_player) -> List[Tuple[Any, Any]]:
-        return [(player.pawn.position.column, player.pawn.position.row)
-                for player in self.players if player != current_player]
+        return [
+            (player.pawn.position.column, player.pawn.position.row)
+            for player in self.players if player != current_player
+        ]
 
     def get_players_current_and_start_positions(
         self
     ) -> List[Tuple[GridPosition, GridPosition]]:
-        return [(player.pawn.position, player.start_position)
-                for player in self.players]
+        return [
+            (player.pawn.position, player.start_position)
+            for player in self.players
+        ]
 
     @staticmethod
     def get_fences_blocked_moves(
