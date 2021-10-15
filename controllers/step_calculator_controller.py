@@ -35,7 +35,7 @@ class StepCalculatorController:
         self,
         position: GridPosition,
         players_positions: List[Tuple[int, int]],
-        blocked_moves: List[List[Tuple[int, int]]]
+        blocked_moves: List[Tuple[GridPosition, GridPosition]]
     ) -> List[PawnStep]:
         column, row = position.column, position.row
         result = []
@@ -138,7 +138,7 @@ class StepCalculatorController:
     def get_blocked_coordinates_for_position(
         self,
         position: GridPosition,
-        blocked_moves: List[List[Tuple[int, int]]]
+        blocked_moves: List[Tuple[GridPosition, GridPosition]]
     ) -> List[Tuple[int, int]]:
         blocked_coordinates = []
         for move in blocked_moves:
@@ -152,7 +152,7 @@ class StepCalculatorController:
     def get_valid_fence_steps(
         self,
         fences: List[Fence],
-        blocked_moves: List[List[Tuple[int, int]]],
+        blocked_moves: List[Tuple[GridPosition, GridPosition]],
         players_positions: List[Tuple[GridPosition, GridPosition]]
     ) -> List[FenceStep]:
         valid_fence_steps = []
@@ -247,7 +247,7 @@ class StepCalculatorController:
     def is_fence_step_valid(
         self,
         position: GridPosition,
-        blocked_moves: List[List[Tuple[int, int]]],
+        blocked_moves: List[Tuple[GridPosition, GridPosition]],
         player_start_position: GridPosition
     ) -> bool:
         matrix = self._get_moves_to_grid(blocked_moves)
@@ -270,8 +270,8 @@ class StepCalculatorController:
 
     def _get_moves_to_grid(
         self,
-        blocked_moves: List[List[Tuple[int, int]]]
-    ) -> Dict[GridPosition: int]:
+        blocked_moves: List[Tuple[GridPosition, GridPosition]]
+    ) -> Dict[GridPosition, int]:
         moves = {}
         for row in range(self.n):
             for column in range(self.n):

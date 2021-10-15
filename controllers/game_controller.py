@@ -131,7 +131,7 @@ class GameController:
     @staticmethod
     def get_fences_blocked_moves(
         fences: List[Fence]
-    ) -> List[List[Tuple[int, int]]]:
+    ) -> List[Tuple[GridPosition, GridPosition]]:
         moves = []
         for fence in fences:
             moves.extend(fence.coordinates)
