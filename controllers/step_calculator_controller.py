@@ -197,7 +197,7 @@ class StepCalculatorController:
         self,
         position: GridPosition,
         direction: FenceDirection,
-        blocked_moves: List[Tuple[int, int]],
+        blocked_moves: List[Tuple[GridPosition, GridPosition]],
         players_position: List[Tuple[GridPosition, GridPosition]]
     ) -> bool:
         fence = Fence(position, ColorEnum.RED, direction)
@@ -271,7 +271,7 @@ class StepCalculatorController:
     def _get_moves_to_grid(
         self,
         blocked_moves: List[Tuple[GridPosition, GridPosition]]
-    ) -> Dict[GridPosition, int]:
+    ) -> Dict[GridPosition, Dict[GridPosition, int]]:
         moves = {}
         for row in range(self.n):
             for column in range(self.n):
