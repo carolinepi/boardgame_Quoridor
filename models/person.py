@@ -29,12 +29,15 @@ class Person(Player):
                 if pawn_step is not None:
                     return pawn_step
             if key == PlayerActionKey.FENCE_STEP.value and self.can_fences_step:
-                click = board.get_mouse()
-                fence_step = board.get_fence_step_from_mouse_position(
-                    click.x, click.y, valid_fence_steps
-                )
-                if fence_step is not None:
-                    return fence_step
+                with board.draw_valid_fence_step(
+                    valid_fence_steps
+                ):
+                    click = board.get_mouse()
+                    fence_step = board.get_fence_step_from_mouse_position(
+                        click.x, click.y, valid_fence_steps
+                    )
+                    if fence_step is not None:
+                        return fence_step
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__} {self.name} ({self.color})'

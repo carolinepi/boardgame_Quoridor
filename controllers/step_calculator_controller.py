@@ -35,7 +35,7 @@ class StepCalculatorController:
         self,
         position: GridPosition,
         players_positions: List[Tuple[int, int]],
-        blocked_moves:  List[Tuple[GridPosition, GridPosition]]
+        blocked_moves: List[Tuple[GridPosition, GridPosition]]
     ) -> List[PawnStep]:
         column, row = position.column, position.row
         result = []
@@ -173,7 +173,7 @@ class StepCalculatorController:
         ]
         fences_position.extend(self.get_blocked_grids_for_fences(fences))
 
-        for row in range(self.last_n):
+        for row in range(self.n):
             for column in range(0, self.n):
 
                 position = GridPosition(column, row)
@@ -191,7 +191,8 @@ class StepCalculatorController:
                             FenceStep(position, FenceDirection.HORIZONTAL)
                         )
 
-                if (position, FenceDirection.VERTICAL) not in fences_position:
+                if row != self.last_n and column != self.first_n and \
+                   (position, FenceDirection.VERTICAL) not in fences_position:
                     step_is_valid = self._check_new_fence_valid(
                         position=position,
                         direction=FenceDirection.VERTICAL,
@@ -309,4 +310,3 @@ class StepCalculatorController:
                 moves[grid] = result
 
         return moves
-

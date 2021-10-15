@@ -113,7 +113,7 @@ class GameController:
         fence = player.put_fence(action.position, action.direction)
         self.board.put_fence(fence, field)
 
-    def get_players_positions(self, current_player) -> List[Tuple[Any, Any]]:
+    def get_players_positions(self, current_player) -> List[Tuple[int, int]]:
         return [
             (player.pawn.position.column, player.pawn.position.row)
             for player in self.players if player != current_player
