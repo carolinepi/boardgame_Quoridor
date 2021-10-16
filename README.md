@@ -10,5 +10,5 @@ It must be  more, than 3. Upgrade it if you have only 2 version
 
 ###How to play
 - If you want to do step, please press 'q' and choose 1 option of possible steps by pawn
-- If you want to do step, please press 'p' and choose 1 option of possible fence moves
+- If you want to do step, please press 'e' and choose 1 option of possible fence moves
 - If somebody won, please, press `Esc` to close game or `Enter` to play another game.
