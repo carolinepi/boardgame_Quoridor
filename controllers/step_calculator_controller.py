@@ -17,8 +17,7 @@ class StepCalculatorController:
         self.middle_n = self.last_n // 2
 
     def get_valid_fence_steps_for_position(
-        self,
-        position: GridPosition
+            self, position: GridPosition
     ) -> List[FenceStep]:
         column, row = position.column, position.row
         result = []
@@ -44,6 +43,7 @@ class StepCalculatorController:
             position=position,
             blocked_moves=blocked_moves
         )
+
         if column != self.first_n and \
            (column - 1, row) not in blocked_coordinates:
             if (column - 1, row) in players_positions:
@@ -60,10 +60,9 @@ class StepCalculatorController:
                     if column - 1 != self.first_n and \
                        row != self.last_n and \
                        (column - 1, row + 1) not in blocked:
-                        result.append(
-                            PawnStep(position, position.left().bottom())
-                        )
-                    if column - 1 != self.first_n and row != self.first_n and \
+                        result.append(PawnStep(position, position.left().bottom()))
+                    if column - 1 != self.first_n and \
+                       row != self.first_n and \
                        (column - 1, row + 1) not in blocked:
                         result.append(PawnStep(position, position.left().top()))
             else:
@@ -73,71 +72,83 @@ class StepCalculatorController:
            (column + 1, row) not in blocked_coordinates:
             if (column + 1, row) in players_positions:
                 blocked = self.get_blocked_coordinates_for_position(
-                    position.right(), blocked_moves)
+                    position=position.right(),
+                    blocked_moves=blocked_moves
+                )
 
                 if column + 1 != self.last_n and \
                    (column + 2, row) not in blocked:
                     result.append(PawnStep(position, position.right().right()))
                 else:
                     blocked += blocked_coordinates
-                    if column + 1 != self.last_n and row != self.last_n and \
+                    if column + 1 != self.last_n and \
+                       row != self.last_n and \
                        (column + 1, row + 1) not in blocked:
                         result.append(
-                            PawnStep(position, position.right().bottom()))
-                    if column + 1 != self.last_n and row != self.first_n and \
+                            PawnStep(position, position.right().bottom())
+                        )
+                    if column + 1 != self.last_n and \
+                       row != self.first_n and \
                        (column + 1, row - 1) not in blocked:
                         result.append(
-                            PawnStep(position, position.right().bottom()))
+                            PawnStep(position, position.right().bottom())
+                        )
             else:
                 result.append(PawnStep(position, position.right()))
         if row != self.first_n and (column, row - 1) not in blocked_coordinates:
             if (column, row - 1) in players_positions:
                 blocked = self.get_blocked_coordinates_for_position(
-                    position.top(), blocked_moves)
+                    position=position.top(),
+                    blocked_moves=blocked_moves)
 
                 if row - 1 != self.first_n and (column, row - 2) not in blocked:
                     result.append(PawnStep(position, position.top().top()))
                 else:
                     blocked += blocked_coordinates
-                    if row - 1 != self.first_n and\
+                    if row - 1 != self.first_n and \
                        column + 1 != self.last_n and \
-                       (column + 1,  - 1) not in blocked:
+                       (column + 1, row - 1) not in blocked:
                         result.append(
-                            PawnStep(position, position.top().right()))
+                            PawnStep(position, position.top().right())
+                        )
                     if row - 1 != self.first_n and \
                        column - 1 != self.first_n and \
                        (column - 1, row - 1) not in blocked:
-                        result.append(PawnStep(position, position.top().left()))
+                        result.append(
+                            PawnStep(position, position.top().left())
+                        )
             else:
                 result.append(PawnStep(position, position.top()))
         if row != self.last_n and (column, row + 1) not in blocked_coordinates:
             if (column, row + 1) in players_positions:
                 blocked = self.get_blocked_coordinates_for_position(
                     position=position.bottom(),
-                    blocked_moves=blocked_moves
-                )
+                    blocked_moves=blocked_moves)
 
                 if row + 1 != self.last_n and (column, row + 2) not in blocked:
                     result.append(
-                        PawnStep(position, position.bottom().bottom()))
+                        PawnStep(position, position.bottom().bottom())
+                    )
                 else:
                     blocked += blocked_coordinates
                     if row + 1 != self.last_n and \
                        column + 1 != self.last_n and \
                        (column + 1, row + 1) not in blocked:
                         result.append(
-                            PawnStep(position, position.bottom().right()))
+                            PawnStep(position, position.bottom().right())
+                        )
                     if row + 1 != self.last_n and \
                        column - 1 != self.first_n and \
                        (column - 1, row + 1) not in blocked:
                         result.append(
-                            PawnStep(position, position.bottom().left()))
+                            PawnStep(position, position.bottom().left())
+                        )
             else:
                 result.append(PawnStep(position, position.bottom()))
         return result
 
+    @staticmethod
     def get_blocked_coordinates_for_position(
-        self,
         position: GridPosition,
         blocked_moves: List[Tuple[GridPosition, GridPosition]]
     ) -> List[Tuple[int, int]]:
@@ -162,7 +173,7 @@ class StepCalculatorController:
         ]
         fences_position.extend(self.get_blocked_grids_for_fences(fences))
 
-        for row in range(self.last_n):
+        for row in range(self.n):
             for column in range(0, self.n):
 
                 position = GridPosition(column, row)
@@ -180,7 +191,8 @@ class StepCalculatorController:
                             FenceStep(position, FenceDirection.HORIZONTAL)
                         )
 
-                if (position, FenceDirection.VERTICAL) not in fences_position:
+                if row != self.last_n and column != self.first_n and \
+                   (position, FenceDirection.VERTICAL) not in fences_position:
                     step_is_valid = self._check_new_fence_valid(
                         position=position,
                         direction=FenceDirection.VERTICAL,
@@ -190,7 +202,8 @@ class StepCalculatorController:
 
                     if step_is_valid:
                         valid_fence_steps.append(
-                            FenceStep(position, FenceDirection.VERTICAL))
+                            FenceStep(position, FenceDirection.VERTICAL)
+                        )
 
         return valid_fence_steps
 
@@ -202,15 +215,14 @@ class StepCalculatorController:
         players_position: List[Tuple[GridPosition, GridPosition]]
     ) -> bool:
         fence = Fence(position, ColorEnum.RED, direction)
-        blocked_moves += fence.coordinates
+        new_blocked_moves = blocked_moves + fence.coordinates
         valid_step = False
 
-        for players_position in players_position:
+        for player_position in players_position:
             valid_step = self.is_fence_step_valid(
-                position=players_position[0],
-                blocked_moves=blocked_moves,
-                player_start_position=players_position[1]
-            )
+                player_position[0],
+                new_blocked_moves,
+                player_position[1])
             if not valid_step:
                 break
 

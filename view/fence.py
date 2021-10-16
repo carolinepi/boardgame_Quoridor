@@ -24,7 +24,8 @@ class Fence:
 
         if self.direction == FenceDirection.HORIZONTAL:
             self.coordinates.append(
-                [self.position.right(), self.position.right().top()])
+                [self.position.right(), self.position.right().top()]
+            )
             self.coordinates[0].append(self.position.top())
         if self.direction == FenceDirection.VERTICAL:
             self.coordinates.append(
