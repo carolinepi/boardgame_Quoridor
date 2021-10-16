@@ -1,4 +1,4 @@
-# boardgame_Quoridor bt team Casablanca
+# boardgame_Quoridor by team Casablanca
 ### Fast setting
 If you want to launch locally, do next steps:
 1. Check your python version: ```python -v```
