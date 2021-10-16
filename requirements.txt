@@ -1,0 +1,5 @@
+graphics.py==5.0.1.post1
+trafaret==2.1.0
+trafaret-config==2.0.2
+typing-extensions==3.7.4.3
+
