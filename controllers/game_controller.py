@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Any
 
 from graphics import GraphicsError
 
@@ -63,28 +63,27 @@ class GameController:
                     players_position = self.get_players_positions(player)
                     fences = self.get_all_fences()
                     blocked_moves = self.get_fences_blocked_moves(fences)
-
-                    players_cur_start_positions = self.\
-                        get_players_current_and_start_positions()
+                    players_current_and_start_positions = \
+                        self.get_players_current_and_start_positions()
 
                     valid_pawn_steps = self.calculator_controller.\
                         get_valid_pawn_steps(
-                            position=player.pawn.position,
-                            players_positions=players_position,
-                            blocked_moves=blocked_moves
+                            player.pawn.position,
+                            players_position,
+                            blocked_moves
                         )
 
                     valid_fence_steps = self.calculator_controller.\
                         get_valid_fence_steps(
-                            fences=fences,
-                            blocked_moves=blocked_moves,
-                            players_positions=players_cur_start_positions
+                            fences,
+                            blocked_moves,
+                            players_current_and_start_positions
                         )
 
                     action = player.play(
-                        board=self.board,
-                        valid_pawn_steps=valid_pawn_steps,
-                        valid_fence_steps=valid_fence_steps,
+                        self.board,
+                        valid_pawn_steps,
+                        valid_fence_steps,
                     )
 
                     if isinstance(action, PawnStep):
