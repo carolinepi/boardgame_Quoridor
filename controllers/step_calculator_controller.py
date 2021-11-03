@@ -1,6 +1,6 @@
 from typing import List, Tuple, Dict
 
-from controllers.dijkstra import calculate_path_from_position
+from controllers.dijkstra import calculate_path_from_position, calculate_shortest_path_from_position
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
@@ -310,3 +310,39 @@ class StepCalculatorController:
                 moves[grid] = result
 
         return moves
+
+    def get_shortest_path_from_position(
+            self,
+            position,
+            blocked_moves,
+            last_positions
+    ) -> Tuple[List[GridPosition], int]:
+        last_grids = {}
+        path = []
+
+        matrix = self._get_moves_to_grid(blocked_moves)
+        previous_grids, visited = calculate_shortest_path_from_position(
+            matrix=matrix,
+            position=position
+        )
+
+        for grid in last_positions:
+            last_grids[grid] = visited[grid]
+
+        destination = min(last_grids, key=last_grids.get)
+
+        grid = destination
+        while grid != position:
+            path.append(grid)
+            if grid in previous_grids:
+                grid = previous_grids[grid]
+            else:
+                path = []
+                break
+
+        if path:
+            path.append(position)
+            path.reverse()
+
+        return path, last_grids[destination]
+

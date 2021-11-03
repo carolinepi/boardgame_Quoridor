@@ -33,42 +33,27 @@ def calculate_path_from_position(
 
 def calculate_shortest_path_from_position(
         matrix: Dict[GridPosition, Dict[GridPosition, int]],
-        position: GridPosition,
-        destination: GridPosition
-) -> Tuple[List[GridPosition], int]:
+        position: GridPosition
+) -> Tuple[Dict[GridPosition, GridPosition], Dict[GridPosition, int]]:
     visited = {position: 0, }
     current = position
     unvisited = {grid: float('inf') for grid in matrix if grid != position}
-    previous_nodes = {}
-    path = []
+    previous_grids = {}
 
     while unvisited:
         for grid in matrix[current]:
             if grid not in visited:
                 if unvisited[grid] == float('inf'):
                     unvisited[grid] = visited[current] + matrix[current][grid]
-                    previous_nodes[grid] = current
+                    previous_grids[grid] = current
                 elif unvisited[grid] >= unvisited[grid] + matrix[current][grid]:
                     unvisited[grid] += matrix[current][grid]
-                    previous_nodes[grid] = current
+                    previous_grids[grid] = current
 
         current = min(unvisited, key=unvisited.get)
         visited[current] = unvisited[current]
         unvisited.pop(current)
 
-    grid = destination
-    while grid != position:
-        path.append(grid)
-        if grid in previous_nodes:
-            grid = previous_nodes[grid]
-        else:
-            path = []
-            break
-
-    if path:
-        path.append(position)
-        path.reverse()
-
-    return path, visited[destination]
+    return previous_grids, visited
 
 
