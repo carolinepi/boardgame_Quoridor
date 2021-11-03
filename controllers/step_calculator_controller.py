@@ -17,7 +17,7 @@ class StepCalculatorController:
         self.middle_n = self.last_n // 2
 
     def get_valid_fence_steps_for_position(
-            self, position: GridPosition
+        self, position: GridPosition
     ) -> List[FenceStep]:
         column, row = position.column, position.row
         result = []

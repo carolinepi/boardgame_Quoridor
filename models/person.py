@@ -1,5 +1,6 @@
 from typing import Union, List
 
+from exception import NoWayError
 from models.fence_step import FenceStep
 from models.pawn_step import PawnStep
 from controllers.utils import PlayerActionKey
@@ -18,9 +19,13 @@ class Person(Player):
         valid_pawn_steps: List[PawnStep],
         valid_fence_steps: List[FenceStep],
     ) -> Union[PawnStep, FenceStep]:
+        if len(valid_pawn_steps) + len(valid_fence_steps) == 0:
+            raise NoWayError
+
         while True:
             key = board.get_keyboard()
             if key == PlayerActionKey.PAWN_STEP.value:
+                print(valid_pawn_steps)
                 with board.draw_valid_pawn_step(self.name, valid_pawn_steps):
                     click = board.get_mouse()
                     pawn_step = board.get_pawn_step_from_mouse_position(

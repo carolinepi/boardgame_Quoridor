@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import List, Union, Optional
 
 from models.fence_step import FenceStep
@@ -75,5 +76,14 @@ class Player:
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__} {self.name} ({self.color})'
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
+
 
 

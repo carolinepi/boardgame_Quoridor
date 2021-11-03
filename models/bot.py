@@ -4,7 +4,6 @@ from typing import Optional, Union, List
 from exception import NoWayError
 from models.fence_step import FenceStep
 from models.pawn_step import PawnStep
-
 from models.player import Player
 
 from view.board import Board
