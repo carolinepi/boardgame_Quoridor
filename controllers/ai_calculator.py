@@ -29,79 +29,15 @@ class AiCalculator:
         self.last_n = self.n - 1
         self.another_player = deepcopy(another_player)
 
-    def choose_step(self, player1: Player):
-        new_player1 = deepcopy(player1)
-        if len(
-            new_player1.fences + self.another_player.fences
-        ) == self.fences_to_change_depth:
-            self.max_depth += 1
-            self.fences_to_change_depth -= 5
+    def choose_step(self, player: Player):
+        new_player1 = deepcopy(player)
 
-        alpha_beta = -1
-        step = None
-        possible_moves_fence, possible_moves_player_1, _ = \
-            self.get_valid_steps_for_player(new_player1, self.another_player)
-        # for possible_move in possible_moves_player_1:
-        #     new_player1.pawn.set_position(
-        #         GridPosition(
-        #             possible_move.to_position.row,
-        #             possible_move.to_position.column
-        #         )
-        #     )
-        check = False
-
-        if (
-            len(possible_moves_player_1) > 1 and
-            self.previous_row != float('inf')
-        ):
-            check = True
-
-        for possible_move in possible_moves_player_1:
-            if (
-                check and
-                possible_move.to_position.row == self.previous_row and
-                possible_move.to_position.column == self.previous_column
-            ):
-                continue
-            new_player1.pawn.set_position(
-                GridPosition(
-                    possible_move.to_position.row,
-                    possible_move.to_position.column
-                )
-            )
-            result = self.minimax_tree(
-                1, new_player1, self.another_player, self.first_n, self.last_n
-            )
-
-            if (
-                result > alpha_beta or
-                (result == alpha_beta and random.randint(0, 10) < 5)
-            ):
-                alpha_beta = result
-                step = possible_move
-
-        if new_player1.can_fences_step:
-            for possible_move_fence in possible_moves_fence:
-                new_player1.put_fence(
-                    possible_move_fence.position, possible_move_fence.direction
-                )
-                result = self.minimax_tree(
-                    1, new_player1, self.another_player, self.first_n, self.last_n
-                )
-                if result > alpha_beta or (
-                    result == alpha_beta
-                    and random.randint(0, 10) < 5
-                    and not isinstance(step, PawnStep)
-                ):
-                    alpha_beta = result
-
-        if isinstance(step, PawnStep):
-            self.previous_row = new_player1.pawn.position.row
-            self.previous_column = new_player1.pawn.position.column
-        else:
-            self.previous_row = float('inf')
-            self.previous_column = float('inf')
-        return step
+        best_value, best_move = self.minimax_tree(
+            0, new_player1, self.another_player, float('-inf'), float('inf')
+        )
+        print(best_value)
+        print(best_move)
+        return best_move
 
     @property
     def max_heuristic(self):
@@ -118,51 +54,22 @@ class AiCalculator:
         return None
 
     def minimax_tree(
-        self, depth: int, new_player1: Player, player2: Player, l: int, r: int
+        self,
+        depth: int,
+        new_player1: Player,
+        player2: Player,
+        alpha: float,
+        beta: float
     ):
+        best_move = None
         if depth == self.max_depth:
-            return self.get_heuristic(new_player1, player2)
+            return self.get_evaluation_function(new_player1, player2), best_move
 
-        alpha_beta_from_end_position = self.get_alpha_beta_from_end_position(
-            new_player1, player2
-        )
-        if alpha_beta_from_end_position:
-            return alpha_beta_from_end_position
-
-        possible_moves_fence, possible_moves_player_1, possible_moves_player_2 = \
+        possible_moves_fence, possible_moves_player_1, _ = \
             self.get_valid_steps_for_player(new_player1, player2)
         print(f'possible_moves_player_1 {possible_moves_player_1}')
-        print(f'possible_moves_player_2 {possible_moves_player_2}')
-
         if depth % 2 == 1:
-            alpha_beta = self.last_n
-
-            for possible_move in possible_moves_player_2:
-                player2.pawn.set_position(
-                    GridPosition(
-                        possible_move.to_position.row,
-                        possible_move.to_position.column
-                    )
-                )
-                result = self.minimax_tree(depth + 1, new_player1, player2, l, r)
-                alpha_beta = min(alpha_beta, result)
-                if result <= l:
-                    return alpha_beta
-
-            if player2.can_fences_step:
-                for possible_move_fence in possible_moves_fence:
-                    player2.put_fence(
-                        possible_move_fence.position,
-                        possible_move_fence.direction
-                    )
-                    result = self.minimax_tree(
-                        depth + 1, new_player1, player2, self.first_n, self.last_n
-                    )
-                    alpha_beta = min(alpha_beta, result)
-                    if result >= r:
-                        return alpha_beta
-        else:
-            alpha_beta = self.first_n
+            best_value = float('-inf')
 
             for possible_move in possible_moves_player_1:
                 new_player1.pawn.set_position(
@@ -171,26 +78,64 @@ class AiCalculator:
                         possible_move.to_position.column
                     )
                 )
-                result = self.minimax_tree(depth + 1, new_player1, player2, l, r)
-                alpha_beta = max(alpha_beta, result)
-                if result >= r:
-                    return alpha_beta
+                child_result, child_move = self.minimax_tree(
+                    depth + 1, new_player1, player2, alpha, beta
+                )
+                if best_value < child_result:
+                    best_value = child_result
+                    best_move = possible_move
+                    alpha = max(alpha, best_value)
+                    if beta <= alpha:
+                        break
 
-            if new_player1.can_fences_step:
-                for possible_move_fence in possible_moves_fence:
-                    new_player1.put_fence(
-                        possible_move_fence.position,
-                        possible_move_fence.direction
-                    )
-                    result = self.minimax_tree(
-                        depth + 1, new_player1, player2, self.first_n, self.last_n
-                    )
-                    alpha_beta = max(alpha_beta, result)
-                    if result >= r:
-                        return alpha_beta
-        return alpha_beta
+            # if new_player1.can_fences_step:
+            #     for possible_move_fence in possible_moves_fence:
+            #         new_player1.put_fence(
+            #             possible_move_fence.position,
+            #             possible_move_fence.direction
+            #         )
+            #         result = self.minimax_tree(
+            #             depth + 1, new_player1, player2, self.first_n, self.last_n
+            #         )
+            #         alpha_beta = min(alpha_beta, result)
+            #         if result >= beta:
+            #             return alpha_beta
+        else:
+            best_value = float('inf')
 
-    def get_heuristic(self, new_player1: Player, player2: Player):
+            for possible_move in possible_moves_player_1:
+                new_player1.pawn.set_position(
+                    GridPosition(
+                        possible_move.to_position.row,
+                        possible_move.to_position.column
+                    )
+                )
+                child_result, child_move = self.minimax_tree(
+                    depth + 1, new_player1, player2, alpha, beta
+                )
+
+                if best_value >= child_result:
+                    best_value = child_result
+                    best_move = possible_move
+                    beta = min(beta, best_value)
+                    if beta <= alpha:
+                        break
+
+            # if new_player1.can_fences_step:
+            #     for possible_move_fence in possible_moves_fence:
+            #         new_player1.put_fence(
+            #             possible_move_fence.position,
+            #             possible_move_fence.direction
+            #         )
+            #         result = self.minimax_tree(
+            #             depth + 1, new_player1, player2, self.first_n, self.last_n
+            #         )
+            #         alpha_beta = max(alpha_beta, result)
+            #         if result >= beta:
+            #             return alpha_beta
+        return best_value, best_move
+
+    def get_evaluation_function(self, new_player1: Player, player2: Player):
         _, possible_moves_player_1, possible_moves_player_2 = \
             self.get_valid_steps_for_player(new_player1, player2)
 
