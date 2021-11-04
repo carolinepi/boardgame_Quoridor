@@ -61,16 +61,16 @@ class GameController:
         try:
             while not finished:
                 for player in self.players:
-                    print(player)
                     if isinstance(player, AiBot):
+                        print('BOT NEW STEP')
                         another_player_set = list(set(self.players) - {player})
                         ai_calculator = AiCalculator(
-                            self.board.n,
                             self.calculator_controller,
                             another_player_set[0]
                         )
                         step = player.play_ai(ai_calculator)
                     else:
+
 
                         players_position = self.get_players_positions(player)
                         fences = self.get_all_fences()
@@ -105,7 +105,6 @@ class GameController:
                     elif isinstance(step, FenceStep):
                         self.play_fence_step(player, step)
                     print('NEXT')
-                    print(finished)
         except GraphicsError:
             pass
 

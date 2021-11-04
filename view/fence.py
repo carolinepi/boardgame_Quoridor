@@ -66,6 +66,7 @@ class Fence:
         result = cls.__new__(cls)
         memo[id(self)] = result
         result.position = deepcopy(self.position, memo)
+        result.coordinates = deepcopy(self.coordinates, memo)
         result.color = deepcopy(self.color, memo)
         result.direction = deepcopy(self.direction, memo)
         return result

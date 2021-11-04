@@ -312,10 +312,10 @@ class StepCalculatorController:
         return moves
 
     def get_shortest_path_from_position(
-            self,
-            position,
-            blocked_moves,
-            last_positions
+        self,
+        position: GridPosition,
+        blocked_moves: List[Tuple[GridPosition, GridPosition]],
+        last_positions: List[GridPosition]
     ) -> Tuple[List[GridPosition], int]:
         last_grids = {}
         path = []

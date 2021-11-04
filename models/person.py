@@ -25,7 +25,6 @@ class Person(Player):
         while True:
             key = board.get_keyboard()
             if key == PlayerActionKey.PAWN_STEP.value:
-                print(valid_pawn_steps)
                 with board.draw_valid_pawn_step(self.name, valid_pawn_steps):
                     click = board.get_mouse()
                     pawn_step = board.get_pawn_step_from_mouse_position(

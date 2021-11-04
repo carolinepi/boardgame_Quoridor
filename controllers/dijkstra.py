@@ -32,8 +32,8 @@ def calculate_path_from_position(
 
 
 def calculate_shortest_path_from_position(
-        matrix: Dict[GridPosition, Dict[GridPosition, int]],
-        position: GridPosition
+    matrix: Dict[GridPosition, Dict[GridPosition, int]],
+    position: GridPosition
 ) -> Tuple[Dict[GridPosition, GridPosition], Dict[GridPosition, int]]:
     visited = {position: 0, }
     current = position
