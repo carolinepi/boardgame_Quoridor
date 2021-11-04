@@ -12,6 +12,8 @@ from view.field import Field
 from view.pawn import Pawn
 from view.utils import ColorEnum, FenceDirection
 
+from controllers.utils import directions_to_string
+
 
 class Player:
     LIMIT_FENCES = 10
@@ -44,22 +46,31 @@ class Player:
 
     def move_pawn(self, field: Field) -> None:
         self.pawn.position = field.position
-        print(f'{self.name} moved to {field.position}')
+        print(f'move {field.position.column}{field.position.row}')
+
+    def jump_pawn(self, field: Field) -> None:
+        self.pawn.position = field.position
+        print(f'jump {field.position.column}{field.position.row}')
 
     def move_pawn_to_position(self, position: GridPosition) -> None:
         self.pawn.position = position
-        print(f'move {position.column}{position.row}')
 
     def jump_to_position(self, position: GridPosition) -> None:
         self.pawn.position = position
-        print(f'jump {position.column}{position.row}')
 
     def put_fence(
         self, position: GridPosition, direction: FenceDirection
     ) -> Fence:
         fence = Fence(position, self.color, direction)
         self.fences.append(fence)
-        print(f'wall {position.column}{position.row}{direction}')
+        return fence
+
+    def put_fence_with_print(
+            self, position: GridPosition, direction: FenceDirection
+    ) -> Fence:
+        fence = Fence(position, self.color, direction)
+        self.fences.append(fence)
+        print(f'wall {position.column}{position.row}{directions_to_string[direction]}')
         return fence
 
     @property

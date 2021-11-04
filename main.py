@@ -10,13 +10,19 @@ from models.player import ColorEnum
 from view.console import Console
 
 if __name__ == '__main__':
-    players = [
-        Person(name='Caroline', color=ColorEnum.RED),
-        AiBot(name='Bot', color=ColorEnum.GREEN)
-    ]
+    color = input()
+    if color == 'black':
+        players = [
+            Person(name='AnotherBot', color=ColorEnum.RED),
+            AiBot(name='Bot', color=ColorEnum.GREEN)
+        ]
+    else:
+        players = [
+            AiBot(name='Bot', color=ColorEnum.GREEN),
+            Person(name='AnotherBot', color=ColorEnum.RED)
+        ]
     config_controller = ConfigController('./config.yaml')
     config = config_controller.parse_config()
-
     board = Console(config)
     calculator_controller = StepCalculatorController(config.n)
     game = GameController(players, board, calculator_controller)

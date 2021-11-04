@@ -27,11 +27,9 @@ class AiCalculator:
 
     def choose_step(self, player: Player):
         player_bot = deepcopy(player)
-        start_time = time.time()
         best_value, best_move = self.minimax_tree(
             0, player_bot, self.player2, float('-inf'), float('inf'), True
         )
-        print("--- %s seconds ---" % (time.time() - start_time))
         return best_move
 
     def minimax_tree(

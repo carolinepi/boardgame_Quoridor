@@ -15,6 +15,7 @@ from models.player import Player
 from view.board import Board
 from view.console import Console
 from view.fence import Fence
+from view.utils import StepType
 
 
 class GameController:
@@ -114,7 +115,10 @@ class GameController:
         self, player: Player, step: PawnStep
     ) -> bool:
         field = self.console.get_field(step.to_position)
-        player.move_pawn(field)
+        if step.step_type == StepType.MOVE:
+            player.move_pawn(field)
+        elif step.step_type == StepType.JUMP:
+            player.jump_pawn(field)
         # self.console.move_pawn(player.pawn, field)
         if player.has_won:
             score = player.inc_score()
@@ -123,7 +127,7 @@ class GameController:
 
     def play_fence_step(self, player: Player, step: FenceStep) -> None:
         field = self.console.get_field(step.position)
-        fence = player.put_fence(step.position, step.direction)
+        fence = player.put_fence_with_print(step.position, step.direction)
         # self.console.put_fence(fence, field)
 
     def get_players_positions(

@@ -22,3 +22,8 @@ class ColorEnum(AutoNameEnum):
 class FenceDirection(Enum):
     HORIZONTAL = auto()
     VERTICAL = auto()
+
+
+class StepType(Enum):
+    MOVE = auto()
+    JUMP = auto()

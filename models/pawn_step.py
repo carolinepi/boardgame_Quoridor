@@ -1,6 +1,7 @@
 from typing import Optional
 
 from models.grid_position import GridPosition
+from view.utils import StepType
 
 
 class PawnStep:
@@ -8,11 +9,13 @@ class PawnStep:
         self,
         from_position: GridPosition,
         to_position: GridPosition,
-        through_position: Optional[GridPosition] = None
+        through_position: Optional[GridPosition] = None,
+        step_type: Optional[StepType] = StepType.MOVE
     ):
         self.from_position = from_position
         self.to_position = to_position
         self.through_position = through_position
+        self.step_type = step_type
 
     @property
     def is_jump(self):
