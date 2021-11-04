@@ -88,6 +88,3 @@ class Player:
         for k, v in self.__dict__.items():
             setattr(result, k, deepcopy(v, memo))
         return result
-
-
-
