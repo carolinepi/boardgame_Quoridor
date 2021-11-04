@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import List, Union, Optional
 
 from models.fence_step import FenceStep
@@ -44,6 +45,10 @@ class Player:
         self.pawn.position = field.position
         print(f'{self.name} moved to {field.position}')
 
+    def move_pawn_to_position(self, position: GridPosition) -> None:
+        self.pawn.position = position
+        print(f'{self.name} moved to {position}')
+
     def put_fence(
         self, position: GridPosition, direction: FenceDirection
     ) -> Fence:
@@ -76,4 +81,10 @@ class Player:
     def __str__(self) -> str:
         return f'{self.__class__.__name__} {self.name} ({self.color})'
 
-
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result

@@ -2,6 +2,7 @@ from controllers.config_controller import ConfigController
 from controllers.game_controller import GameController
 from controllers.step_calculator_controller import StepCalculatorController
 from controllers.utils import PlayerActionKey
+from models.ai_bot import AiBot
 
 from models.bot import Bot
 from models.person import Person
@@ -12,7 +13,7 @@ from view.board import Board
 if __name__ == '__main__':
     players = [
         Person(name='Caroline', color=ColorEnum.RED),
-        Bot(name='Bot', color=ColorEnum.GREEN)
+        AiBot(name='Bot', color=ColorEnum.GREEN)
     ]
     config_controller = ConfigController('./config.yaml')
     config = config_controller.parse_config()

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Optional
 
 from graphics import Point
@@ -59,3 +60,13 @@ class Fence:
     def current_element(self) -> Optional[FenceFigure]:
         if self._figure is not None:
             return self._figure
+
+    def __deepcopy__(self, memo) -> 'Fence':
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        result.position = deepcopy(self.position, memo)
+        result.coordinates = deepcopy(self.coordinates, memo)
+        result.color = deepcopy(self.color, memo)
+        result.direction = deepcopy(self.direction, memo)
+        return result

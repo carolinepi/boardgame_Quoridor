@@ -1,6 +1,6 @@
 from typing import List, Tuple, Dict
 
-from controllers.dijkstra import calculate_path_from_position
+from controllers.dijkstra import calculate_path_from_position, calculate_shortest_path_from_position
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
@@ -17,7 +17,7 @@ class StepCalculatorController:
         self.middle_n = self.last_n // 2
 
     def get_valid_fence_steps_for_position(
-            self, position: GridPosition
+        self, position: GridPosition
     ) -> List[FenceStep]:
         column, row = position.column, position.row
         result = []
@@ -310,3 +310,67 @@ class StepCalculatorController:
                 moves[grid] = result
 
         return moves
+
+    def get_shortest_path_from_position(
+        self,
+        position: GridPosition,
+        blocked_moves: List[Tuple[GridPosition, GridPosition]],
+        last_positions: List[GridPosition]
+    ) -> int:
+        last_grids = {}
+        # path = []
+
+        matrix = self._get_moves_to_grid(blocked_moves)
+        previous_grids, visited = calculate_shortest_path_from_position(
+            matrix=matrix,
+            position=position
+        )
+
+        for grid in last_positions:
+            last_grids[grid] = visited[grid]
+
+        destination = min(last_grids, key=last_grids.get)
+
+        # grid = destination
+        # while grid != position:
+        #     path.append(grid)
+        #     if grid in previous_grids:
+        #         grid = previous_grids[grid]
+        #     else:
+        #         path = []
+        #         break
+        #
+        # if path:
+        #     path.append(position)
+        #     path.reverse()
+
+        # return path, last_grids[destination]
+        return last_grids[destination]
+
+    @staticmethod
+    def get_valid_fences_around_position(
+            position: GridPosition,
+            available_fences: List[FenceStep]
+    ) -> List[FenceStep]:
+        blocked_for_position = {
+            FenceStep(position, FenceDirection.VERTICAL),
+            FenceStep(position, FenceDirection.HORIZONTAL),
+            FenceStep(position.right(), FenceDirection.VERTICAL),
+            FenceStep(position.top(), FenceDirection.VERTICAL),
+            FenceStep(position.top().right(), FenceDirection.VERTICAL),
+            FenceStep(position.left(), FenceDirection.HORIZONTAL),
+            FenceStep(position.bottom(), FenceDirection.HORIZONTAL),
+            FenceStep(position.bottom().left(), FenceDirection.HORIZONTAL),
+        }
+
+        return list(set(available_fences).intersection(blocked_for_position))
+
+    @staticmethod
+    def get_fences_blocked_moves(
+        fences: List[Fence]
+    ) -> List[Tuple[GridPosition, GridPosition]]:
+        steps = []
+        for fence in fences:
+            steps.extend(fence.coordinates)
+
+        return steps
