@@ -45,6 +45,10 @@ class Player:
         self.pawn.position = field.position
         print(f'{self.name} moved to {field.position}')
 
+    def move_pawn_to_position(self, position: GridPosition) -> None:
+        self.pawn.position = position
+        print(f'{self.name} moved to {position}')
+
     def put_fence(
         self, position: GridPosition, direction: FenceDirection
     ) -> Fence:
