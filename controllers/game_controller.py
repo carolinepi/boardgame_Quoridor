@@ -3,6 +3,7 @@ from typing import List, Tuple
 from graphics import GraphicsError
 
 from controllers.ai_calculator import AiCalculator
+from exception import NoWayError
 from models.ai_bot import AiBot
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
@@ -65,6 +66,7 @@ class GameController:
                         print('BOT NEW STEP')
                         another_player_set = list(set(self.players) - {player})
                         ai_calculator = AiCalculator(
+                            self.console.n,
                             self.calculator_controller,
                             another_player_set[0]
                         )
