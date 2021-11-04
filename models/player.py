@@ -12,7 +12,7 @@ from view.field import Field
 from view.pawn import Pawn
 from view.utils import ColorEnum, FenceDirection
 
-from controllers.utils import directions_to_string
+from controllers.utils import directions_to_string, fences_to_bot, columns_to_bot, bots_to_columns
 
 
 class Player:
@@ -46,11 +46,11 @@ class Player:
 
     def move_pawn(self, field: Field) -> None:
         self.pawn.position = field.position
-        print(f'move {field.position.column}{field.position.row}')
+        print(f'move {bots_to_columns[field.position.column]}{field.position.row + 1}')
 
     def jump_pawn(self, field: Field) -> None:
         self.pawn.position = field.position
-        print(f'jump {field.position.column}{field.position.row}')
+        print(f'jump {columns_to_bot[field.position.column]}{field.position.row + 1}')
 
     def move_pawn_to_position(self, position: GridPosition) -> None:
         self.pawn.position = position
@@ -69,8 +69,9 @@ class Player:
             self, position: GridPosition, direction: FenceDirection
     ) -> Fence:
         fence = Fence(position, self.color, direction)
+        fence_step = FenceStep(position, direction)
         self.fences.append(fence)
-        print(f'wall {position.column}{position.row}{directions_to_string[direction]}')
+        print(f'wall {fences_to_bot[fence_step]}')
         return fence
 
     @property

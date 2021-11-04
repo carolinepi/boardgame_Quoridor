@@ -102,32 +102,40 @@ class GameController:
                             valid_fence_steps,
                         )
 
+                    print_result = False
+                    if isinstance(player, AiBot):
+                        print_result = True
                     if isinstance(step, PawnStep):
-                        finished = self.play_pawn_step(player, step)
+                        finished = self.play_pawn_step(player, step, print_result)
                         if finished:
                             break
                     elif isinstance(step, FenceStep):
-                        self.play_fence_step(player, step)
+                        self.play_fence_step(player, step, print_result)
         except GraphicsError:
             pass
 
     def play_pawn_step(
-        self, player: Player, step: PawnStep
+        self, player: Player, step: PawnStep, print_result: bool
     ) -> bool:
         field = self.console.get_field(step.to_position)
-        if step.step_type == StepType.MOVE:
-            player.move_pawn(field)
-        elif step.step_type == StepType.JUMP:
-            player.jump_pawn(field)
-        # self.console.move_pawn(player.pawn, field)
+        if print_result:
+            if step.step_type == StepType.MOVE:
+                player.move_pawn(field)
+            elif step.step_type == StepType.JUMP:
+                player.jump_pawn(field)
+        else:
+            player.move_pawn_to_position(field.position)
         if player.has_won:
             score = player.inc_score()
             return True
         return False
 
-    def play_fence_step(self, player: Player, step: FenceStep) -> None:
+    def play_fence_step(self, player: Player, step: FenceStep, print_result: bool) -> None:
         field = self.console.get_field(step.position)
-        fence = player.put_fence_with_print(step.position, step.direction)
+        if print_result:
+            fence = player.put_fence_with_print(step.position, step.direction)
+        else:
+            fence = player.put_fence(step.position, step.direction)
         # self.console.put_fence(fence, field)
 
     def get_players_positions(
