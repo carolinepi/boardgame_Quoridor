@@ -359,8 +359,8 @@ class StepCalculatorController:
             FenceStep(position.top(), FenceDirection.VERTICAL),
             FenceStep(position.top().right(), FenceDirection.VERTICAL),
             FenceStep(position.left(), FenceDirection.HORIZONTAL),
-            # FenceStep(position.bottom(), FenceDirection.HORIZONTAL),
-            # FenceStep(position.bottom().left(), FenceDirection.HORIZONTAL),
+            FenceStep(position.bottom(), FenceDirection.HORIZONTAL),
+            FenceStep(position.bottom().left(), FenceDirection.HORIZONTAL),
         }
 
         return list(set(available_fences).intersection(blocked_for_position))

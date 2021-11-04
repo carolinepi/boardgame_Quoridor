@@ -103,6 +103,7 @@ class GameController:
                         if finished:
                             break
                     elif isinstance(step, FenceStep):
+                        print(step)
                         self.play_fence_step(player, step)
                     print('NEXT')
         except GraphicsError:

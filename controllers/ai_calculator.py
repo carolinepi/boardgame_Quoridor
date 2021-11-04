@@ -1,4 +1,5 @@
 import random
+import time
 from typing import List, Tuple
 
 from controllers.step_calculator_controller import StepCalculatorController
@@ -23,10 +24,11 @@ class AiCalculator:
 
     def choose_step(self, player: Player):
         player_bot = player
-
+        start_time = time.time()
         best_value, best_move = self.minimax_tree(
             0, player_bot, self.player2, float('-inf'), float('inf'), False
         )
+        print("--- %s seconds ---" % (time.time() - start_time))
         print(f'FINAL: {best_value}')
         return best_move
 
@@ -39,18 +41,21 @@ class AiCalculator:
         beta: float,
         is_max_turn: bool,
     ):
-        print(f'depth = {depth}, alpha = {alpha}, beta = {beta}, player1 = {player_bot.pawn.position}')
+        # print(f'depth = {depth}, alpha = {alpha}, beta = {beta}, player1 = {player_bot.pawn.position}')
         best_move = None
         if depth == self.max_depth:
             print(f'if depth == self.max_depth: {self.get_evaluation_function(player_bot, player2)} {best_move}')
             return self.get_evaluation_function(player_bot, player2), best_move
 
         possible_moves_fence, possible_moves_player_1 = \
-            self.get_valid_steps_for_bot_player(player_bot, player2)
+            self.get_valid_steps_for_bot_player(
+                player_bot.can_fences_step, player_bot, player2
+            )
 
         possible_moves = self.shuffle_moves(
-            possible_moves_fence, possible_moves_player_1
+            player_bot, player2, possible_moves_fence, possible_moves_player_1
         )
+        print(possible_moves)
 
         best_value = float('-inf') if is_max_turn else float('inf')
         for possible_move in possible_moves:
@@ -77,7 +82,7 @@ class AiCalculator:
             if fence:
                 player_bot.fences.remove(fence)
 
-            print(f'is_max_turn = {is_max_turn} best_value = {best_value}, child_result = {child_result}')
+            # print(f'is_max_turn = {is_max_turn} best_value = {best_value}, child_result = {child_result}')
 
             if is_max_turn:
                 if best_value < child_result:
@@ -113,9 +118,8 @@ class AiCalculator:
                 blocked_moves,
                 player2.end_position
             )
-        print(f'shortest_path_for_player = {shortest_path_for_player}')
-        print(f'shortest_path_for_bot = {shortest_path_for_bot}')
-        # return shortest_path_for_bot
+        # print(f'shortest_path_for_player = {shortest_path_for_player}')
+        # print(f'shortest_path_for_bot = {shortest_path_for_bot}')
         return abs(shortest_path_for_player - shortest_path_for_bot)
 
     @staticmethod
@@ -136,23 +140,26 @@ class AiCalculator:
         ]
 
     def get_valid_steps_for_bot_player(
-        self, new_player1: Player, player2: Player
+        self, can_fences_step: bool, new_player1: Player, player2: Player
     ) -> Tuple[List[FenceStep], List[PawnStep]]:
         fences = self.get_all_fences(new_player1, player2)
         blocked_moves = self.calculator_controller.get_fences_blocked_moves(
             fences
         )
-        players_current_and_start_positions = \
-            self.get_players_current_and_start_positions(new_player1, player2)
-        valid_fence_steps = self.calculator_controller.get_valid_fence_steps(
-            fences,
-            blocked_moves,
-            players_current_and_start_positions
-        )
-        valid_fence_steps_around_position = self.calculator_controller.\
-            get_valid_fences_around_position(
-                player2.pawn.position, valid_fence_steps
+        valid_fence_steps_around_position = []
+        if can_fences_step:
+            players_current_and_start_positions = \
+                self.get_players_current_and_start_positions(new_player1, player2)
+            valid_fence_steps = self.calculator_controller.get_valid_fence_steps(
+                fences,
+                blocked_moves,
+                players_current_and_start_positions
             )
+            valid_fence_steps_around_position = self.calculator_controller.\
+                get_valid_fences_around_position(
+                    player2.pawn.position, valid_fence_steps
+                )
+
         valid_pawn_steps_for_player1 = self.calculator_controller. \
             get_valid_pawn_steps(
                 new_player1.pawn.position,
@@ -166,26 +173,40 @@ class AiCalculator:
 
     @staticmethod
     def shuffle_moves(
+        bot_player: Player,
+        player2: Player,
         possible_moves_fence: List[FenceStep],
         possible_moves_player: List[PawnStep],
     ):
         shuffled1 = []
         shuffled2 = []
+        shuffled3 = []
         all_moves = [*possible_moves_player, *possible_moves_fence]
         for move in all_moves:
             if isinstance(move, PawnStep):
-                if (
-                    move.from_position.row -
-                    move.to_position.row
-                ) == 1:
+                if (move.from_position.row - move.to_position.row) == 1:
                     shuffled1.insert(0, move)
+                elif (move.from_position.row - move.to_position.row) == 1:
+                    shuffled3.append(move)
                 else:
                     shuffled2.append(move)
-            if isinstance(move, FenceStep):
+
+            elif isinstance(move, FenceStep):
                 if move.direction == FenceDirection.HORIZONTAL:
-                    shuffled1.insert(0, move)
+                    if bot_player.end_position[0].row == 0:
+                        if player2.pawn.position.bottom().row == move.position.row:
+                            shuffled1.insert(0, move)
+                        elif player2.pawn.position.row == move.position.row:
+                            shuffled3.append(move)
+                    else:
+                        if player2.pawn.position.bottom().row == move.position.row:
+                            shuffled3.append(move)
+                        elif player2.pawn.position.row == move.position.row:
+                            shuffled1.insert(0, move)
                 else:
                     shuffled2.append(move)
         random.shuffle(shuffled1)
-        random.shuffle(shuffled2)
-        return [*shuffled1, *shuffled2]
+        if len(shuffled1) > 0:
+            return [*shuffled1, *shuffled2]
+        else:
+            return [*shuffled2, *shuffled3]
