@@ -45,10 +45,9 @@ class AiCalculator:
         # print(f'depth = {depth}, alpha = {alpha}, beta = {beta}, player1 = {player_bot.pawn.position}')
         best_move = None
         if depth == self.max_depth:
-            print(f'if depth == self.max_depth: {self.get_evaluation_function(player_bot, player2)} {best_move}')
+            # print(f'if depth == self.max_depth: {self.get_evaluation_function(player_bot, player2)} {best_move}')
             return self.get_evaluation_function(player_bot, player2), best_move
 
-        print(f'player_bot {player_bot.pawn.position}')
         possible_moves_fence, possible_moves_player_1 = \
             self.get_valid_steps_for_bot_player(
                 player_bot.can_fences_step, player_bot, player2
@@ -90,10 +89,11 @@ class AiCalculator:
                 if best_value <= child_result:
                     best_value = child_result
                     best_move = possible_move
-                alpha = max(alpha, -best_value)
+                alpha = max(alpha, best_value)
                 if beta <= alpha:
                     break
             elif not is_max_turn:
+                child_result = -child_result
                 if best_value > child_result:
                     best_value = child_result
                     best_move = possible_move
@@ -208,7 +208,5 @@ class AiCalculator:
                 else:
                     shuffled2.append(move)
         random.shuffle(shuffled1)
-        if len(shuffled1) > 0:
-            return [*shuffled1, *shuffled2]
-        else:
-            return [*shuffled2, *shuffled3]
+        random.shuffle(shuffled2)
+        return [*shuffled1, *shuffled2, *shuffled3][:5]
