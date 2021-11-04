@@ -16,9 +16,11 @@ class AiCalculator:
 
     def __init__(
         self,
+        n: int,
         calculator_controller: StepCalculatorController,
         player2: Player,
     ):
+        self.n = n
         self.max_depth = 2
         self.calculator_controller = calculator_controller
         self.player2 = player2
@@ -30,7 +32,6 @@ class AiCalculator:
             0, player_bot, self.player2, float('-inf'), float('inf'), True
         )
         print("--- %s seconds ---" % (time.time() - start_time))
-        print(f'FINAL: {best_value}')
         return best_move
 
     def minimax_tree(
@@ -42,22 +43,18 @@ class AiCalculator:
         beta: float,
         is_max_turn: bool,
     ):
-        # print(f'depth = {depth}, alpha = {alpha}, beta = {beta}, player1 = {player_bot.pawn.position}')
         best_move = None
         if depth == self.max_depth:
-            # print(f'if depth == self.max_depth: {self.get_evaluation_function(player_bot, player2)} {best_move}')
             return self.get_evaluation_function(player_bot, player2), best_move
 
         possible_moves_fence, possible_moves_player_1 = \
             self.get_valid_steps_for_bot_player(
                 player_bot.can_fences_step, player_bot, player2
             )
-        print(possible_moves_player_1)
 
         possible_moves = self.shuffle_moves(
             player_bot, player2, possible_moves_fence, possible_moves_player_1
         )
-        print(possible_moves)
 
         best_value = float('-inf') if is_max_turn else float('inf')
         for possible_move in possible_moves:
@@ -84,8 +81,6 @@ class AiCalculator:
             if fence:
                 player_bot.fences.remove(fence)
 
-            # print(f'is_max_turn = {is_max_turn} best_value = {best_value}, child_result = {child_result}')
-
             if is_max_turn:
                 if best_value < child_result:
                     best_value = child_result
@@ -104,16 +99,16 @@ class AiCalculator:
 
         return best_value, best_move
 
-    def get_evaluation_function(self, new_player1: Player, player2: Player):
-        fences = self.get_all_fences(new_player1, player2)
+    def get_evaluation_function(self, player_bot: Player, player2: Player):
+        fences = self.get_all_fences(player_bot, player2)
         blocked_moves = self.calculator_controller.get_fences_blocked_moves(
             fences
         )
         shortest_path_for_bot = self.calculator_controller. \
             get_shortest_path_from_position(
-                new_player1.pawn.position,
+                player_bot.pawn.position,
                 blocked_moves,
-                new_player1.end_position
+                player_bot.end_position
             )
         shortest_path_for_player = self.calculator_controller. \
             get_shortest_path_from_position(
@@ -121,38 +116,71 @@ class AiCalculator:
                 blocked_moves,
                 player2.end_position
             )
-        # print(f'shortest_path_for_player = {shortest_path_for_player}')
-        # print(f'shortest_path_for_bot = {shortest_path_for_bot}')
-        return shortest_path_for_bot - shortest_path_for_player
+
+        shortest_path_from_start_to_current_for_bot = self.calculator_controller. \
+            get_shortest_path_from_position(
+                player_bot.start_position,
+                [],
+                [player_bot.pawn.position]
+            )
+
+        player_bot_row = player_bot.pawn.position.row
+        if player_bot_row == player_bot.end_position[0].row:
+            shortest_path_to_next_row = 0
+        else:
+            if player_bot.end_position[0].row == 0:
+                end_next_rows_bot = [
+                    GridPosition(i, player_bot.pawn.position.row - 1)
+                    for i in range(self.n)
+                ]
+            else:
+                end_next_rows_bot = [
+                    GridPosition(i, player_bot.pawn.position.row + 1)
+                    for i in range(self.n)
+                ]
+
+            shortest_path_to_next_row = self.calculator_controller. \
+                get_shortest_path_from_position(
+                    player_bot.pawn.position,
+                    blocked_moves,
+                    end_next_rows_bot
+                )
+
+        return (
+            0.65 * (shortest_path_for_bot - shortest_path_for_player) +
+            0.2 * shortest_path_to_next_row +
+            0.05 * shortest_path_from_start_to_current_for_bot +
+            0.1 * (len(player_bot.fences) - len(player2.fences))
+        )
 
     @staticmethod
-    def get_all_fences(new_player1: Player, player2: Player) -> List[Fence]:
+    def get_all_fences(player_bot: Player, player2: Player) -> List[Fence]:
         fences = []
-        fences.extend(new_player1.fences)
+        fences.extend(player_bot.fences)
         fences.extend(player2.fences)
 
         return fences
 
     @staticmethod
     def get_players_current_and_start_positions(
-        new_player1: Player, player2: Player
+        player_bot: Player, player2: Player
     ) -> List[Tuple[GridPosition, GridPosition]]:
         return [
-            (new_player1.pawn.position, new_player1.start_position),
+            (player_bot.pawn.position, player_bot.start_position),
             (player2.pawn.position, player2.start_position)
         ]
 
     def get_valid_steps_for_bot_player(
-        self, can_fences_step: bool, new_player1: Player, player2: Player
+        self, can_fences_step: bool, player_bot: Player, player2: Player
     ) -> Tuple[List[FenceStep], List[PawnStep]]:
-        fences = self.get_all_fences(new_player1, player2)
+        fences = self.get_all_fences(player_bot, player2)
         blocked_moves = self.calculator_controller.get_fences_blocked_moves(
             fences
         )
         valid_fence_steps_around_position = []
         if can_fences_step:
             players_current_and_start_positions = \
-                self.get_players_current_and_start_positions(new_player1, player2)
+                self.get_players_current_and_start_positions(player_bot, player2)
             valid_fence_steps = self.calculator_controller.get_valid_fence_steps(
                 fences,
                 blocked_moves,
@@ -165,7 +193,7 @@ class AiCalculator:
 
         valid_pawn_steps_for_player1 = self.calculator_controller. \
             get_valid_pawn_steps(
-                new_player1.pawn.position,
+                player_bot.pawn.position,
                 [(player2.pawn.position.column, player2.pawn.position.row)],
                 blocked_moves
             )
@@ -218,4 +246,4 @@ class AiCalculator:
                 else:
                     shuffled2.append(move)
         random.shuffle(shuffled2)
-        return [*shuffled1, *shuffled2, *shuffled3][:4]
+        return [*shuffled1, *shuffled2, *shuffled3][:6]
