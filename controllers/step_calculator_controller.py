@@ -363,3 +363,13 @@ class StepCalculatorController:
         }
 
         return list(set(available_fences).intersection(blocked_for_position))
+
+    @staticmethod
+    def get_fences_blocked_moves(
+        fences: List[Fence]
+    ) -> List[Tuple[GridPosition, GridPosition]]:
+        steps = []
+        for fence in fences:
+            steps.extend(fence.coordinates)
+
+        return steps

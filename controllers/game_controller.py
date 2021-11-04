@@ -71,10 +71,10 @@ class GameController:
                         step = player.play_ai(ai_calculator)
                     else:
 
-
                         players_position = self.get_players_positions(player)
                         fences = self.get_all_fences()
-                        blocked_moves = self.get_fences_blocked_moves(fences)
+                        blocked_moves = self.calculator_controller.\
+                            get_fences_blocked_moves(fences)
                         players_current_and_start_positions = \
                             self.get_players_current_and_start_positions()
 
@@ -141,16 +141,6 @@ class GameController:
             (player.pawn.position, player.start_position)
             for player in self.players
         ]
-
-    @staticmethod
-    def get_fences_blocked_moves(
-        fences: List[Fence]
-    ) -> List[Tuple[GridPosition, GridPosition]]:
-        moves = []
-        for fence in fences:
-            moves.extend(fence.coordinates)
-
-        return moves
 
     def get_all_fences(self) -> List[Fence]:
         fences = []
