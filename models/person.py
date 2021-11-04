@@ -21,7 +21,6 @@ class Person(Player):
             raise NoWayError
 
         while True:
-            print(valid_pawn_steps)
             key, value = board.get_keyboard()
             if key == PlayerActionKey.PAWN_STEP.value or key == PlayerActionKey.PAWN_JUMP.value:
                 column = value[0]
