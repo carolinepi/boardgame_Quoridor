@@ -139,24 +139,6 @@ class Board:
             return None
         return self.field[int(x / self.size)][int(y / self.size)]
 
-    @contextmanager
-    def draw_valid_fence_step(
-        self,
-        valid_steps: List[FenceStep]
-    ):
-        hiding_elements = []
-        for valid_step in valid_steps:
-            possible_fence = Fence(
-                position=valid_step.position,
-                direction=valid_step.direction,
-                color=ColorEnum.BLACK,
-            )
-            field = self.get_field(valid_step.position)
-            hiding_elements.append(self.draw_fence(possible_fence, field))
-        yield
-        for hiding_element in hiding_elements:
-            hiding_element.undraw()
-
     def get_pawn_step_from_mouse_position(
         self, pawn: Pawn, x: int, y: int, valid_pawn_steps: List[PawnStep]
     ) -> Optional[PawnStep]:

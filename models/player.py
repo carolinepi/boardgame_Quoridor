@@ -6,6 +6,7 @@ from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
 
 from view.board import Board
+from view.console import Console
 from view.fence import Fence
 from view.field import Field
 from view.pawn import Pawn
@@ -35,7 +36,7 @@ class Player:
 
     def play(
         self,
-        board: Board,
+        console: Console,
         valid_pawn_steps: List[PawnStep],
         valid_fence_steps: List[FenceStep],
     ) -> Optional[Union[PawnStep, FenceStep]]:
@@ -47,14 +48,18 @@ class Player:
 
     def move_pawn_to_position(self, position: GridPosition) -> None:
         self.pawn.position = position
-        print(f'{self.name} moved to {position}')
+        print(f'move {position.column}{position.row}')
+
+    def jump_to_position(self, position: GridPosition) -> None:
+        self.pawn.position = position
+        print(f'jump {position.column}{position.row}')
 
     def put_fence(
         self, position: GridPosition, direction: FenceDirection
     ) -> Fence:
         fence = Fence(position, self.color, direction)
         self.fences.append(fence)
-        print(f'{self.name} put fence to {position}')
+        print(f'wall {position.column}{position.row}{direction}')
         return fence
 
     @property

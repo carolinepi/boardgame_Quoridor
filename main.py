@@ -4,11 +4,10 @@ from controllers.step_calculator_controller import StepCalculatorController
 from controllers.utils import PlayerActionKey
 from models.ai_bot import AiBot
 
-from models.bot import Bot
 from models.person import Person
 from models.player import ColorEnum
 
-from view.board import Board
+from view.console import Console
 
 if __name__ == '__main__':
     players = [
@@ -18,7 +17,7 @@ if __name__ == '__main__':
     config_controller = ConfigController('./config.yaml')
     config = config_controller.parse_config()
 
-    board = Board(config)
+    board = Console(config)
     calculator_controller = StepCalculatorController(config.n)
     game = GameController(players, board, calculator_controller)
     game.init_game_board()
