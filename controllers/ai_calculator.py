@@ -1,4 +1,3 @@
-import random
 from typing import List, Tuple
 
 from controllers.step_calculator_controller import StepCalculatorController
@@ -7,6 +6,7 @@ from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
 from models.player import Player
 from view.fence import Fence
+from view.utils import FenceDirection
 
 
 class AiCalculator:
@@ -16,7 +16,7 @@ class AiCalculator:
         calculator_controller: StepCalculatorController,
         player2: Player,
     ):
-        self.max_depth = 2
+        self.max_depth = 3
         self.calculator_controller = calculator_controller
         self.player2 = player2
 
@@ -24,7 +24,7 @@ class AiCalculator:
         player_bot = player
 
         best_value, best_move = self.minimax_tree(
-            0, player_bot, self.player2, float('-inf'), float('inf'), True
+            0, player_bot, self.player2, float('-inf'), float('inf'), False
         )
         print(f'FINAL: {best_value}')
         return best_move
@@ -46,12 +46,27 @@ class AiCalculator:
 
         possible_moves_fence, possible_moves_player_1, _ = \
             self.get_valid_steps_for_bot_player(player_bot, player2)
-        random.shuffle(possible_moves_player_1)
-        random.shuffle(possible_moves_fence)
-        print(f'possible_moves_player_1 {possible_moves_player_1}')
+        possible_moves_player_1_new = []
+        for possible_move_player in possible_moves_player_1:
+            if (
+                possible_move_player.from_position.row -
+                possible_move_player.to_position.row
+            ) == 1:
+                possible_moves_player_1_new.insert(0, possible_move_player)
+            else:
+                possible_moves_player_1_new.append(possible_move_player)
+
+        possible_moves_fence_new = []
+        for possible_move_fence in possible_moves_fence:
+            if possible_move_fence.direction == FenceDirection.VERTICAL:
+                possible_moves_fence_new.insert(0, possible_move_fence)
+            else:
+                possible_moves_fence_new.append(possible_move_fence)
+
+        print(f'possible_moves_player_1_new {possible_moves_player_1_new}')
         print(f'possible_moves_fence {possible_moves_fence}')
         best_value = float('-inf') if is_max_turn else float('inf')
-        for possible_move in possible_moves_player_1:
+        for possible_move in possible_moves_player_1_new:
             player_bot.pawn.set_position(
                 GridPosition(
                     possible_move.to_position.column,
@@ -66,50 +81,52 @@ class AiCalculator:
                 not is_max_turn
             )
             print(f'is_max_turn = {is_max_turn} best_value = {best_value}, child_result = {child_result}')
-            if is_max_turn and best_value < child_result:
-                best_value = child_result
-                best_move = possible_move
+            if is_max_turn:
+                if best_value < child_result:
+                    best_value = child_result
+                    best_move = possible_move
                 alpha = max(alpha, best_value)
                 if beta <= alpha:
                     break
-            elif not is_max_turn and best_value > child_result:
-                best_value = child_result
-                best_move = possible_move
+            elif not is_max_turn:
+                if best_value > child_result:
+                    best_value = child_result
+                    best_move = possible_move
                 beta = min(beta, best_value)
                 if beta <= alpha:
                     break
 
-        # if player_bot.can_fences_step:
-        #     for possible_move_fence in possible_moves_fence:
-        #         fence = player_bot.put_fence(
-        #             possible_move_fence.position,
-        #             possible_move_fence.direction
-        #         )
-        #         child_result, child_move = self.minimax_tree(
-        #             depth + 1,
-        #             player_bot,
-        #             player2,
-        #             alpha, beta,
-        #             not is_max_turn,
-        #         )
-        #         player_bot.fences.remove(fence)
-        #
-        #         if is_max_turn and best_value < child_result:
-        #             best_value = child_result
-        #             best_move = possible_move_fence
-        #             alpha = max(alpha, best_value)
-        #             if beta <= alpha:
-        #                 break
-        #
-        #         elif not is_max_turn and best_value > child_result:
-        #             best_value = child_result
-        #             best_move = possible_move_fence
-        #             beta = min(beta, best_value)
-        #             if beta <= alpha:
-        #                 break
+        if player_bot.can_fences_step:
+            for possible_move_fence in possible_moves_fence_new:
+                fence = player_bot.put_fence(
+                    possible_move_fence.position,
+                    possible_move_fence.direction
+                )
+                child_result, child_move = self.minimax_tree(
+                    depth + 1,
+                    player_bot,
+                    player2,
+                    alpha, beta,
+                    not is_max_turn,
+                )
+                player_bot.fences.remove(fence)
+
+                if is_max_turn:
+                    if best_value < child_result:
+                        best_value = child_result
+                        best_move = possible_move_fence
+                    alpha = max(alpha, best_value)
+                    if beta <= alpha:
+                        break
+                elif not is_max_turn:
+                    if best_value > child_result:
+                        best_value = child_result
+                        best_move = possible_move_fence
+                    beta = min(beta, best_value)
+                    if beta <= alpha:
+                        break
 
         return best_value, best_move
-
 
     def get_evaluation_function(self, new_player1: Player, player2: Player):
         fences = self.get_all_fences(new_player1, player2)
@@ -128,9 +145,10 @@ class AiCalculator:
                 blocked_moves,
                 player2.end_position
             )[1]
-        print(f'shortest_path_for_bot = {shortest_path_for_bot}')
         print(f'shortest_path_for_player = {shortest_path_for_player}')
-        return shortest_path_for_player - shortest_path_for_bot
+        print(f'shortest_path_for_bot = {shortest_path_for_bot}')
+        # return shortest_path_for_bot
+        return abs(shortest_path_for_player - shortest_path_for_bot)
 
     @staticmethod
     def get_all_fences(new_player1: Player, player2: Player) -> List[Fence]:
