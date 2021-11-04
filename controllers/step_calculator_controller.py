@@ -316,9 +316,9 @@ class StepCalculatorController:
         position: GridPosition,
         blocked_moves: List[Tuple[GridPosition, GridPosition]],
         last_positions: List[GridPosition]
-    ) -> Tuple[List[GridPosition], int]:
+    ) -> int:
         last_grids = {}
-        path = []
+        # path = []
 
         matrix = self._get_moves_to_grid(blocked_moves)
         previous_grids, visited = calculate_shortest_path_from_position(
@@ -331,20 +331,21 @@ class StepCalculatorController:
 
         destination = min(last_grids, key=last_grids.get)
 
-        grid = destination
-        while grid != position:
-            path.append(grid)
-            if grid in previous_grids:
-                grid = previous_grids[grid]
-            else:
-                path = []
-                break
+        # grid = destination
+        # while grid != position:
+        #     path.append(grid)
+        #     if grid in previous_grids:
+        #         grid = previous_grids[grid]
+        #     else:
+        #         path = []
+        #         break
+        #
+        # if path:
+        #     path.append(position)
+        #     path.reverse()
 
-        if path:
-            path.append(position)
-            path.reverse()
-
-        return path, last_grids[destination]
+        # return path, last_grids[destination]
+        return last_grids[destination]
 
     @staticmethod
     def get_valid_fences_around_position(
@@ -358,8 +359,8 @@ class StepCalculatorController:
             FenceStep(position.top(), FenceDirection.VERTICAL),
             FenceStep(position.top().right(), FenceDirection.VERTICAL),
             FenceStep(position.left(), FenceDirection.HORIZONTAL),
-            FenceStep(position.bottom(), FenceDirection.HORIZONTAL),
-            FenceStep(position.bottom().left(), FenceDirection.HORIZONTAL),
+            # FenceStep(position.bottom(), FenceDirection.HORIZONTAL),
+            # FenceStep(position.bottom().left(), FenceDirection.HORIZONTAL),
         }
 
         return list(set(available_fences).intersection(blocked_for_position))
