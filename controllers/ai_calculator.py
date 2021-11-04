@@ -1,5 +1,6 @@
 import random
 import time
+from copy import deepcopy
 from typing import List, Tuple
 
 from controllers.step_calculator_controller import StepCalculatorController
@@ -23,7 +24,7 @@ class AiCalculator:
         self.player2 = player2
 
     def choose_step(self, player: Player):
-        player_bot = player
+        player_bot = deepcopy(player)
         start_time = time.time()
         best_value, best_move = self.minimax_tree(
             0, player_bot, self.player2, float('-inf'), float('inf'), False
@@ -47,6 +48,7 @@ class AiCalculator:
             print(f'if depth == self.max_depth: {self.get_evaluation_function(player_bot, player2)} {best_move}')
             return self.get_evaluation_function(player_bot, player2), best_move
 
+        print(f'player_bot {player_bot.pawn.position}')
         possible_moves_fence, possible_moves_player_1 = \
             self.get_valid_steps_for_bot_player(
                 player_bot.can_fences_step, player_bot, player2
@@ -85,10 +87,10 @@ class AiCalculator:
             # print(f'is_max_turn = {is_max_turn} best_value = {best_value}, child_result = {child_result}')
 
             if is_max_turn:
-                if best_value < child_result:
+                if best_value <= child_result:
                     best_value = child_result
                     best_move = possible_move
-                alpha = max(alpha, best_value)
+                alpha = max(alpha, -best_value)
                 if beta <= alpha:
                     break
             elif not is_max_turn:
