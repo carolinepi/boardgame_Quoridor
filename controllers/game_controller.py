@@ -1,7 +1,5 @@
 from typing import List, Tuple
 
-from graphics import GraphicsError
-
 from controllers.ai_calculator import AiCalculator
 from exception import NoWayError
 from models.ai_bot import AiBot
@@ -111,7 +109,7 @@ class GameController:
                             break
                     elif isinstance(step, FenceStep):
                         self.play_fence_step(player, step, print_result)
-        except GraphicsError:
+        except Exception:
             pass
 
     def play_pawn_step(
