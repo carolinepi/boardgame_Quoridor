@@ -1,4 +1,4 @@
-from controllers.config_controller import ConfigController
+from controllers.config_controller import ConfigController, Config
 from controllers.game_controller import GameController
 from controllers.step_calculator_controller import StepCalculatorController
 from controllers.utils import PlayerActionKey
@@ -10,6 +10,7 @@ from models.player import ColorEnum
 from view.console import Console
 
 if __name__ == '__main__':
+    print('move E2')
     color = input()
     if color == 'black':
         players = [
@@ -21,8 +22,8 @@ if __name__ == '__main__':
             AiBot(name='Bot', color=ColorEnum.GREEN),
             Person(name='AnotherBot', color=ColorEnum.RED)
         ]
-    config_controller = ConfigController('./config.yaml')
-    config = config_controller.parse_config()
+    # config_controller = ConfigController('./config.yaml')
+    config = Config(n=9, square_size=64, inner_size=8)
     board = Console(config)
     calculator_controller = StepCalculatorController(config.n)
     game = GameController(players, board, calculator_controller)
