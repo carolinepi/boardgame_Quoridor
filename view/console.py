@@ -1,13 +1,8 @@
-from contextlib import contextmanager
-from typing import List, Optional
+from typing import List
 
 from controllers.config_controller import Config
-from models.fence_step import FenceStep
 from models.grid_position import GridPosition
-from models.pawn_step import PawnStep
 from view.field import Field
-from view.pawn import Pawn
-from view.utils import FenceDirection, ColorEnum
 
 
 class Console:

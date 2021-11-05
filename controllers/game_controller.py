@@ -1,16 +1,12 @@
 from typing import List, Tuple
 
 from controllers.ai_calculator import AiCalculator
-from exception import NoWayError
+from controllers.step_calculator_controller import StepCalculatorController
 from models.ai_bot import AiBot
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
-from controllers.step_calculator_controller import StepCalculatorController
-
 from models.player import Player
-
-from view.board import Board
 from view.console import Console
 from view.fence import Fence
 from view.utils import StepType
@@ -41,76 +37,63 @@ class GameController:
 
     def start_game(self):
         self.set_players_position()
-        for player in self.players:
-            field = self.console.get_field(player.start_position)
-            # self.console.draw_pawn(player.pawn, field)
-
-    # def init_game_board(self):
-    #     self.console.create_window()
-    #     self.console.draw()
 
     def init_game_board(self):
         pass
 
     def repeat_game(self):
         for player in self.players:
-            # for fence in player.fences:
-                # self.console.undraw_fence(fence)
-            # self.console.undraw_pawn(player.pawn)
             player.clean_player_data()
 
     def play_game(self):
         finished = False
-        try:
-            while not finished:
-                for player in self.players:
-                    if isinstance(player, AiBot):
-                        another_player_set = list(set(self.players) - {player})
-                        ai_calculator = AiCalculator(
-                            self.console.n,
-                            self.calculator_controller,
-                            another_player_set[0]
-                        )
-                        step = player.play_ai(ai_calculator)
-                    else:
-                        players_position = self.get_players_positions(player)
-                        fences = self.get_all_fences()
-                        blocked_moves = self.calculator_controller.\
-                            get_fences_blocked_moves(fences)
-                        players_current_and_start_positions = \
-                            self.get_players_current_and_start_positions()
+        while not finished:
+            for player in self.players:
+                if isinstance(player, AiBot):
+                    another_player_set = list(set(self.players) - {player})
+                    ai_calculator = AiCalculator(
+                        self.console.n,
+                        self.calculator_controller,
+                        another_player_set[0]
+                    )
+                    step = player.play_ai(ai_calculator)
+                else:
+                    players_position = self.get_players_positions(player)
+                    fences = self.get_all_fences()
+                    blocked_moves = self.calculator_controller.\
+                        get_fences_blocked_moves(fences)
+                    players_current_and_start_positions = \
+                        self.get_players_current_and_start_positions()
 
-                        valid_pawn_steps = self.calculator_controller.\
-                            get_valid_pawn_steps(
-                                player.pawn.position,
-                                players_position,
-                                blocked_moves
-                            )
-
-                        valid_fence_steps = self.calculator_controller.\
-                            get_valid_fence_steps(
-                                fences,
-                                blocked_moves,
-                                players_current_and_start_positions
-                            )
-
-                        step = player.play(
-                            self.console,
-                            valid_pawn_steps,
-                            valid_fence_steps,
+                    valid_pawn_steps = self.calculator_controller.\
+                        get_valid_pawn_steps(
+                            player.pawn.position,
+                            players_position,
+                            blocked_moves
                         )
 
-                    print_result = False
-                    if isinstance(player, AiBot):
-                        print_result = True
-                    if isinstance(step, PawnStep):
-                        finished = self.play_pawn_step(player, step, print_result)
-                        if finished:
-                            break
-                    elif isinstance(step, FenceStep):
-                        self.play_fence_step(player, step, print_result)
-        except Exception:
-            pass
+                    valid_fence_steps = self.calculator_controller.\
+                        get_valid_fence_steps(
+                            fences,
+                            blocked_moves,
+                            players_current_and_start_positions
+                        )
+
+                    step = player.play(
+                        self.console,
+                        valid_pawn_steps,
+                        valid_fence_steps,
+                    )
+
+                print_result = False
+                if isinstance(player, AiBot):
+                    print_result = True
+                if isinstance(step, PawnStep):
+                    finished = self.play_pawn_step(player, step, print_result)
+                    if finished:
+                        break
+                elif isinstance(step, FenceStep):
+                    self.play_fence_step(player, step, print_result)
 
     def play_pawn_step(
         self, player: Player, step: PawnStep, print_result: bool
@@ -128,13 +111,12 @@ class GameController:
             return True
         return False
 
-    def play_fence_step(self, player: Player, step: FenceStep, print_result: bool) -> None:
-        field = self.console.get_field(step.position)
+    @staticmethod
+    def play_fence_step(player: Player, step: FenceStep, print_result: bool) -> None:
         if print_result:
-            fence = player.put_fence_with_print(step.position, step.direction)
+            player.put_fence_with_print(step.position, step.direction)
         else:
-            fence = player.put_fence(step.position, step.direction)
-        # self.console.put_fence(fence, field)
+            player.put_fence(step.position, step.direction)
 
     def get_players_positions(
         self, current_player: Player

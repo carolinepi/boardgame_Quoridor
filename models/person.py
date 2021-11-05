@@ -1,19 +1,19 @@
 from typing import Union, List
 
-from controllers.utils import PlayerActionKey, directions, columns_to_bot , fences_to_bot
+from controllers.utils import PlayerActionKey, columns_to_bot, fences_to_bot
 from exception import NoWayError
 from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
 from models.player import Player
-from view.board import Board
+from view.console import Console
 
 
 class Person(Player):
 
     def play(
         self,
-        board: Board,
+        console: Console,
         valid_pawn_steps: List[PawnStep],
         valid_fence_steps: List[FenceStep],
     ) -> Union[PawnStep, FenceStep]:
@@ -21,7 +21,7 @@ class Person(Player):
             raise NoWayError
 
         while True:
-            key, value = board.get_keyboard()
+            key, value = console.get_keyboard()
             if key == PlayerActionKey.PAWN_STEP.value or key == PlayerActionKey.PAWN_JUMP.value:
                 column = value[0]
                 if column in columns_to_bot:

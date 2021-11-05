@@ -1,7 +1,4 @@
-from graphics import Point
-
 from models.grid_position import GridPosition
-from view.facade import FieldFigure
 from view.utils import ColorEnum
 
 
@@ -21,15 +18,3 @@ class Field:
         self.top = size * self.position.row
         self.bottom = self.top + self.square_size
 
-    def get_field_figure(self, color=ColorEnum.SNOW) -> FieldFigure:
-        top_left = Point(self.left, self.top)
-        bottom_right = Point(self.right, self.bottom)
-        return FieldFigure(top_left, bottom_right, color)
-
-    @property
-    def middle_point(self) -> Point:
-        middle_square_size = int(self.square_size / 2)
-        return Point(
-            self.left + middle_square_size,
-            self.top + middle_square_size
-        )

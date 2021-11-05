@@ -5,14 +5,13 @@ from models.fence_step import FenceStep
 from models.grid_position import GridPosition
 from models.pawn_step import PawnStep
 
-from view.board import Board
 from view.console import Console
 from view.fence import Fence
 from view.field import Field
 from view.pawn import Pawn
 from view.utils import ColorEnum, FenceDirection
 
-from controllers.utils import directions_to_string, fences_to_bot, columns_to_bot, bots_to_columns
+from controllers.utils import  fences_to_bot, columns_to_bot, bots_to_columns
 
 
 class Player:

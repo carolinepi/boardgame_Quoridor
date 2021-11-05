@@ -10,7 +10,6 @@ from models.player import ColorEnum
 from view.console import Console
 
 if __name__ == '__main__':
-    print('move E2')
     color = input()
     if color == 'black':
         players = [
