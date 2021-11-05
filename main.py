@@ -1,4 +1,4 @@
-from controllers.config_controller import ConfigController, Config
+from controllers.config_controller import Config
 from controllers.game_controller import GameController
 from controllers.step_calculator_controller import StepCalculatorController
 from controllers.utils import PlayerActionKey
