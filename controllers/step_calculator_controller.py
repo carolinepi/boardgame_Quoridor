@@ -55,15 +55,15 @@ class StepCalculatorController:
                 if column - 1 != self.first_n and \
                    (column - 2, row) not in blocked:
                     result.append(PawnStep(position, position.left().left()))
-                else:
+                elif column - 1 != self.first_n:
                     blocked += blocked_coordinates
-                    if column - 1 != self.first_n and \
+                    if column != self.first_n and \
                        row != self.last_n and \
                        (column - 1, row + 1) not in blocked:
                         result.append(PawnStep(position, position.left().bottom()))
-                    if column - 1 != self.first_n and \
+                    if column != self.first_n and \
                        row != self.first_n and \
-                       (column - 1, row + 1) not in blocked:
+                       (column - 1, row - 1) not in blocked:
                         result.append(PawnStep(position, position.left().top()))
             else:
                 result.append(PawnStep(position, position.left()))
@@ -79,15 +79,15 @@ class StepCalculatorController:
                 if column + 1 != self.last_n and \
                    (column + 2, row) not in blocked:
                     result.append(PawnStep(position, position.right().right()))
-                else:
+                elif column + 1 != self.last_n:
                     blocked += blocked_coordinates
-                    if column + 1 != self.last_n and \
+                    if column != self.last_n and \
                        row != self.last_n and \
                        (column + 1, row + 1) not in blocked:
                         result.append(
-                            PawnStep(position, position.right().bottom())
+                            PawnStep(position, position.right().top())
                         )
-                    if column + 1 != self.last_n and \
+                    if column != self.last_n and \
                        row != self.first_n and \
                        (column + 1, row - 1) not in blocked:
                         result.append(
@@ -95,6 +95,7 @@ class StepCalculatorController:
                         )
             else:
                 result.append(PawnStep(position, position.right()))
+
         if row != self.first_n and (column, row - 1) not in blocked_coordinates:
             if (column, row - 1) in players_positions:
                 blocked = self.get_blocked_coordinates_for_position(
@@ -103,22 +104,23 @@ class StepCalculatorController:
 
                 if row - 1 != self.first_n and (column, row - 2) not in blocked:
                     result.append(PawnStep(position, position.top().top()))
-                else:
+                elif row - 1 != self.first_n:
                     blocked += blocked_coordinates
-                    if row - 1 != self.first_n and \
-                       column + 1 != self.last_n and \
+                    if row != self.first_n and \
+                       column != self.last_n and \
                        (column + 1, row - 1) not in blocked:
                         result.append(
                             PawnStep(position, position.top().right())
                         )
-                    if row - 1 != self.first_n and \
-                       column - 1 != self.first_n and \
+                    if row != self.first_n and \
+                       column != self.first_n and \
                        (column - 1, row - 1) not in blocked:
                         result.append(
                             PawnStep(position, position.top().left())
                         )
             else:
                 result.append(PawnStep(position, position.top()))
+
         if row != self.last_n and (column, row + 1) not in blocked_coordinates:
             if (column, row + 1) in players_positions:
                 blocked = self.get_blocked_coordinates_for_position(
@@ -129,16 +131,16 @@ class StepCalculatorController:
                     result.append(
                         PawnStep(position, position.bottom().bottom())
                     )
-                else:
+                elif row + 1 != self.last_n:
                     blocked += blocked_coordinates
-                    if row + 1 != self.last_n and \
-                       column + 1 != self.last_n and \
+                    if row != self.last_n and \
+                       column != self.last_n and \
                        (column + 1, row + 1) not in blocked:
                         result.append(
                             PawnStep(position, position.bottom().right())
                         )
-                    if row + 1 != self.last_n and \
-                       column - 1 != self.first_n and \
+                    if row != self.last_n and \
+                       column != self.first_n and \
                        (column - 1, row + 1) not in blocked:
                         result.append(
                             PawnStep(position, position.bottom().left())
