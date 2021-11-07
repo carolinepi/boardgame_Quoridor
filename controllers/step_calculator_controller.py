@@ -318,7 +318,6 @@ class StepCalculatorController:
         last_positions: List[GridPosition]
     ) -> int:
         last_grids = {}
-        # path = []
 
         matrix = self._get_moves_to_grid(blocked_moves)
         previous_grids, visited = calculate_shortest_path_from_position(
@@ -331,20 +330,6 @@ class StepCalculatorController:
 
         destination = min(last_grids, key=last_grids.get)
 
-        # grid = destination
-        # while grid != position:
-        #     path.append(grid)
-        #     if grid in previous_grids:
-        #         grid = previous_grids[grid]
-        #     else:
-        #         path = []
-        #         break
-        #
-        # if path:
-        #     path.append(position)
-        #     path.reverse()
-
-        # return path, last_grids[destination]
         return last_grids[destination]
 
     @staticmethod

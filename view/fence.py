@@ -1,9 +1,7 @@
 from copy import deepcopy
-from typing import Optional
 
 
 from models.grid_position import GridPosition
-from view.field import Field
 from view.utils import FenceDirection, ColorEnum
 
 

@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple
 
 from models.grid_position import GridPosition
 

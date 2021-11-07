@@ -42,12 +42,13 @@ class Console:
             return [GridPosition(i, self.first_n) for i in range(self.n)]
         return []
 
-    def get_keyboard(self):
+    @staticmethod
+    def get_keyboard():
         step = input().strip()
         return step.split()
 
     @staticmethod
     def exit():
         print("finish game")
-        exit()
+        return
 

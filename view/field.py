@@ -1,5 +1,4 @@
 from models.grid_position import GridPosition
-from view.utils import ColorEnum
 
 
 class Field:

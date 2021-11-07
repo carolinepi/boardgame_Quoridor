@@ -38,9 +38,6 @@ class GameController:
     def start_game(self):
         self.set_players_position()
 
-    def init_game_board(self):
-        pass
-
     def repeat_game(self):
         for player in self.players:
             player.clean_player_data()
@@ -107,7 +104,6 @@ class GameController:
         else:
             player.move_pawn_to_position(field.position)
         if player.has_won:
-            score = player.inc_score()
             return True
         return False
 
@@ -142,4 +138,4 @@ class GameController:
         return fences
 
     def finish(self):
-        self.console.exit()
+        return self.console.exit()

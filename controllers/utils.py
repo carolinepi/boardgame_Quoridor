@@ -5,12 +5,6 @@ from models.grid_position import GridPosition
 from view.utils import FenceDirection
 
 
-# class PlayerActionKey(Enum):
-#     PAWN_STEP = 'q'
-#     FENCE_STEP = 'e'
-#     RETRY_GAME = 'Return'
-
-
 class PlayerActionKey(Enum):
     PAWN_STEP = 'move'
     PAWN_JUMP = 'jump'
