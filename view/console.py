@@ -29,8 +29,8 @@ class Console:
 
     def get_start_positions(self) -> List[GridPosition]:
         return [
-            GridPosition(self.middle_n, self.first_n),
-            GridPosition(self.middle_n, self.last_n)
+            GridPosition(self.middle_n, self.last_n),
+            GridPosition(self.middle_n, self.first_n)
         ]
 
     def get_end_positions(
