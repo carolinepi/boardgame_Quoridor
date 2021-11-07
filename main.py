@@ -26,7 +26,6 @@ if __name__ == '__main__':
     board = Console(config)
     calculator_controller = StepCalculatorController(config.n)
     game = GameController(players, board, calculator_controller)
-    game.init_game_board()
     while True:
         game.start_game()
         game.play_game()
